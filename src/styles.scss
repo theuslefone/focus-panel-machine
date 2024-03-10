@@ -1,1 +1,160 @@
-/* You can add global styles to this file, and also import other style files */
+// ---------------------------- INDEX
+/*  
+-- IMPORTS
+-- SCRUCTURE
+-- TYPOGRAPHY 
+-- FLEX-CLASS
+-- DEFAULT-BUTTONS
+-- ANIMATIONS
+
+
+
+
+
+
+
+
+
+
+
+*/
+
+// ---------------------------- IMPORTS 
+@use '@angular/material' as mat;
+@include mat.core();
+$project-studio-primary: mat.define-palette(mat.$indigo-palette);
+$project-studio-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+$project-studio-warn: mat.define-palette(mat.$red-palette);
+$project-studio-theme: mat.define-light-theme((
+  color: (
+    primary: $project-studio-primary,
+    accent: $project-studio-accent,
+    warn: $project-studio-warn,
+  )
+));
+@include mat.all-component-themes($project-studio-theme);
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
+
+
+// ---------------------------- SCRUCTURE 
+html, body { height: 100%; }
+
+body { margin: 0; font-family: 'Lora', serif; }
+
+section{
+  width: 100%;
+  max-width: 1150px;
+  margin: 0 auto;
+}
+
+:root {
+  /* Cores Principais */
+  --color_p: #E5ECF4;
+  --color_a: #E76C1E;
+  --color_c: #5588FC;  /* Azul pastel como cor complementar */
+
+  /* Variações Dark e Light */
+  --color_pd: #0A0A0A;  /* ligeiramente mais escuro */
+  --color_pl: #4A4A4A;  /* ligeiramente mais claro */
+
+  --color_ad: #E6A740;  /* ligeiramente mais escuro */
+  --color_al: #FFD966;  /* ligeiramente mais claro */
+
+  --color_cd: #3D70CC;  /* ligeiramente mais escuro */
+  --color_cl: #80AFFF;  /* ligeiramente mais claro */
+
+  /* Tons de Cinza */
+  --gray-1: #E5E5E5;
+  --gray-2: #CCCCCC;
+  --gray-3: #B2B2B2;
+  --gray-4: #999999;
+  --gray-5: #7F7F7F;
+
+  /* Cores de Confirmação e Cancelamento */
+  --confirm: #4CAF50;  /* Verde */
+  --cancel: #E57373;   /* Vermelho */
+}
+
+
+// ---------------------------- TYPOGRAPHY
+
+.content {
+  h1{
+    color: white;
+    font-size: 35px;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  p{
+    color: white;
+    font-size: 20px;
+  }
+  
+}
+
+// ---------------------------- FLEX-CLASS
+
+.flexC {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+}
+
+.flex{
+  display: flex;
+}
+
+.flex, .flexC{
+  @media screen and (min-width:600px) {
+    .fx_2:nth-child(1n) {
+        width: calc(100%/2 - 10px);
+        margin: 0 10px 10px 0
+    }
+  
+    .fx_2:nth-child(2n) { 
+    width: calc(100%/2 - 10px);
+    margin: 0 0 10px 10px;
+  }
+  }
+  
+  @media screen and (max-width:599px) {
+    .fx_2 {
+        width: 100%;
+        margin: 0 0 10px 0;
+    }
+  }
+}
+
+
+
+
+// ---------------------------- DEFAULT-BUTTONS
+
+a.default-button{
+    font-family: 'Lora', serif;
+    font-size: 18px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--color_p);
+    background-color: var(--color_a);
+    border: 1px solid var(--color_a);
+    border-radius: 5px;
+    display: flex;
+    width: 100%;
+    max-width: 200px;
+    height: 45px;
+    justify-content: center;
+    align-items: center;
+    transition: linear 0.2s;
+}
+
+a.default-button:hover{
+  transform: scale(1.01);
+  font-weight: bold;
+}
+
+
+// ---------------------------- ANIMATIONS

@@ -1,0 +1,106 @@
+// ---------------------------- INDEX
+/*  
+-- HOME-HEADER
+
+
+
+
+
+
+
+
+
+
+
+*/
+
+// ---------------------------- HOME-HEADER
+
+.home-header {
+    background-color: var(--color_p);
+    color: var(--color_a);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0px;
+    height: 50px;
+  
+      .logo-area {
+          height: 70px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 280px;
+          background-color: var(--color_a);
+  
+      }
+    .hamburguer-btn {
+      background-color: transparent;
+      border: none;
+      color: white;
+      cursor: pointer;
+      display: none;
+  
+      &:hover {
+        background-color: var(--color_a-d); 
+      }
+    }
+  
+    .logo {
+      width: 100px; 
+    }
+  
+    .user-photo {
+      position: relative;
+      cursor: pointer;
+  
+      img {
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+      }
+  
+      .user-dropdown {
+        position: absolute;
+        z-index: 2;
+        top: 100%;
+        right: 0;
+        background-color: #fff;
+        width: 160px;
+  
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 5px;
+  
+        a{
+            padding: 12px 0px;
+        }
+  
+        a:hover {
+            background: #fafafa;
+            width: 100%;
+            text-align: center;
+        }
+      }
+  
+      &:hover .user-dropdown {
+        border: 1px solid #ddd;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+    }
+  
+  }
+    
+  .sidenav-container {
+    height: 100vh;
+  }
+  
+  .mat-sidenav {
+      width: 300px; /* Defina a largura do mat-sidenav conforme necessário */
+      background-color: #ffffff; /* Defina a cor de fundo do mat-sidenav */
+    }
+  
+  
