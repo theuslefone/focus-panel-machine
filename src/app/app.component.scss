@@ -31,7 +31,8 @@
           align-items: center;
           justify-content: center;
           width: 280px;
-          background-color: var(--color_a);
+          background-color: var(--color_p);
+          border-right: 2px solid var(--gray-2);
   
       }
     .hamburguer-btn {
@@ -99,8 +100,9 @@
   }
   
   .mat-sidenav {
-      width: 300px; /* Defina a largura do mat-sidenav conforme necessário */
-      background-color: #ffffff; /* Defina a cor de fundo do mat-sidenav */
+    width: 280px;
+    background-color: #ffffff; /* Defina a cor de fundo do mat-sidenav */
+    border-right: 2px solid var(--gray-2);
     }
   
   

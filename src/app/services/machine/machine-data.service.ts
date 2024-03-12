@@ -6,6 +6,7 @@ import { error } from 'console';
 @Injectable({
   providedIn: 'root'
 })
+
 export class MachineDataService {
 
   private apiUrl = 'http://localhost:3333/machineData/';
@@ -26,8 +27,15 @@ export class MachineDataService {
 
   async getMachineById(id: any): Promise<any> {
     try {
-      const machines = await this.getMachine();
-      const machine = machines.find((m: any) => m.id === id);
+      let machines = await this.getMachine();
+      let machine;
+      for (let i = 0; i < machines.length; i++) {
+        if (machines[i].id == id) {
+            machine = machines[i];
+            break;
+        }
+      }
+
       return machine || null;
     } catch (error) {
       console.error('Failed to get machine by ID:', error);

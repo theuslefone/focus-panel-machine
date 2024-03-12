@@ -1,4 +1,4 @@
-import { NgForOf } from '@angular/common';
+import { NgForOf, CommonModule  } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -10,7 +10,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MachineDataService } from '../../services/machine/machine-data.service';
-
 
 import {
   CompactType,
@@ -31,7 +30,7 @@ import {
   standalone: true,
   imports: [
     NgForOf,
-
+    CommonModule,
     MatButtonModule,
     MatIconModule,
     GridsterComponent,
@@ -44,7 +43,7 @@ export class HomePageComponent implements OnInit {
   dashboard!: GridsterItem[];
   itemToPush!: GridsterItemComponent;
   machineId! : any;
-  machineList!: any;
+  machineList: any;
  
   constructor(
     private route: ActivatedRoute,
@@ -95,11 +94,22 @@ export class HomePageComponent implements OnInit {
   async loadMachineData(machineId: any): Promise<void> {
     try {
       this.machineList = await this.machineDataService.getMachineById(machineId);
+      this.machineList = this.machineList.data;
       this.cdr.detectChanges(); 
     } catch (error) {
       console.error('Failed to load machine data:', error);
     }
   }
+
+  async loadAllMachineData(machineId: any): Promise<void> {
+    try {
+      this.machineList = await this.machineDataService.getMachineById(machineId);
+      this.cdr.detectChanges(); 
+    } catch (error) {
+      console.error('Failed to load machine data:', error);
+    }
+  }
+
 
   async changeMachine(){
     this.loadMachineData(this.machineId);
