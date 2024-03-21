@@ -8,7 +8,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:focus-panel-machine": "node dist/focus-panel-machine/server/server.mjs",
-    "server": "json-server --watch src/assets/machineData.json --port 3333"
+    "server": "json-server --watch src/assets/machineData.json --port 3333",
+    "server-dashboard": "json-server --watch src/assets/dashboard.json --port 3331"
   },
   "private": true,
   "dependencies": {

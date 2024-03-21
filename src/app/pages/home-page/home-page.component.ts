@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MachineDataService } from '../../services/machine/machine-data.service';
+import {MatMenuModule} from '@angular/material/menu';
 
 import {
   CompactType,
@@ -18,8 +19,10 @@ import {
   GridsterItem,
   GridsterItemComponent,
   GridsterPush,
-  GridType
+  GridType,
+  DisplayGrid
 } from 'angular-gridster2';
+import { LocalStorageService } from '../../services/localstorage.service';
 
 @Component({
   selector: 'app-home-page',
@@ -33,8 +36,9 @@ import {
     CommonModule,
     MatButtonModule,
     MatIconModule,
+    MatMenuModule,
     GridsterComponent,
-    GridsterItemComponent
+    GridsterItemComponent,
   ]
 })
 
@@ -44,12 +48,13 @@ export class HomePageComponent implements OnInit {
   itemToPush!: GridsterItemComponent;
   machineId! : any;
   machineList: any;
+  unsavedChanges : boolean = false;
  
   constructor(
     private route: ActivatedRoute,
     private machineDataService: MachineDataService,
-    private cdr: ChangeDetectorRef
-
+    private cdr: ChangeDetectorRef,
+    private localStorageService: LocalStorageService
     ) { 
       
     }
@@ -61,9 +66,16 @@ export class HomePageComponent implements OnInit {
     });
 
     this.options = {
-      gridType: GridType.Fit,
-      compactType: CompactType.None,
+      gridType: GridType.Fixed,
+      displayGrid: DisplayGrid.Always,
+      fixedColWidth: 105,
+      fixedRowHeight: 105,
+      keepFixedHeightInMobile: false,
+      keepFixedWidthInMobile: false,
+      mobileBreakpoint: 640,
+      useBodyForBreakpoint: false,
       pushItems: true,
+      rowHeightRatio: 1,
       draggable: {
         enabled: true
       },
@@ -71,20 +83,6 @@ export class HomePageComponent implements OnInit {
         enabled: true
       }
     };
-
-    this.dashboard = [
-      { cols: 2, rows: 1, y: 0, x: 0 },
-      { cols: 2, rows: 2, y: 0, x: 2 },
-      { cols: 1, rows: 1, y: 0, x: 4 },
-      { cols: 3, rows: 2, y: 1, x: 4 },
-      { cols: 1, rows: 1, y: 4, x: 5 },
-      { cols: 1, rows: 1, y: 2, x: 1 },
-      { cols: 2, rows: 2, y: 5, x: 5 },
-      { cols: 2, rows: 2, y: 3, x: 2 },
-      { cols: 2, rows: 1, y: 2, x: 2 },
-      { cols: 1, rows: 1, y: 3, x: 4 },
-      { cols: 1, rows: 1, y: 0, x: 6 }
-    ];
 
     this.route.params.subscribe(params => {
       this.loadMachineData(params['id']);
@@ -95,6 +93,7 @@ export class HomePageComponent implements OnInit {
     try {
       this.machineList = await this.machineDataService.getMachineById(machineId);
       this.machineList = this.machineList.data;
+      this.getDashboard()
       this.cdr.detectChanges(); 
     } catch (error) {
       console.error('Failed to load machine data:', error);
@@ -110,9 +109,12 @@ export class HomePageComponent implements OnInit {
     }
   }
 
-
   async changeMachine(){
     this.loadMachineData(this.machineId);
+  }
+
+  unsaveChanges(): void {
+    this.unsavedChanges = true;
   }
 
   changedOptions(): void {
@@ -129,7 +131,7 @@ export class HomePageComponent implements OnInit {
 
   addItem(id:any): void {
     this.dashboard.push({ x: 0, y: 0, cols: 1, rows: 1 });
-    console.log(id);
+    this.unsaveChanges();
   }
 
   initItem(item: GridsterItem, itemComponent: GridsterItemComponent): void {
@@ -152,6 +154,7 @@ export class HomePageComponent implements OnInit {
       push.restoreItems(); 
     }
     push.destroy(); 
+    this.unsaveChanges();
   }
 
   getItemComponent(): void {
@@ -159,4 +162,19 @@ export class HomePageComponent implements OnInit {
       console.log(this.options.api.getItemComponent(this.dashboard[0]));
     }
   }
+
+  saveDashboardLayout(): void {
+    try {
+      this.localStorageService.saveFromDashboard(`dashboard_${this.machineId}`, JSON.stringify(this.dashboard));
+      console.log('Layout do dashboard salvo com sucesso.');
+      this.unsavedChanges = false;
+    } catch (error) {
+      console.error('Erro ao tentar salvar o layout do dashboard:', error);
+    }
+  }
+
+  getDashboard(): void {
+      this.dashboard =  this.localStorageService.getDashboard(this.machineId);
+  }
+  
 }

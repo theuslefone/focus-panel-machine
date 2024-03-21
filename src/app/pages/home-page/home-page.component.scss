@@ -1,3 +1,68 @@
+.options-header{
+    display: flex;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    max-width: 100vw;
+    overflow-x: auto;
+    align-items: center;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    justify-content: space-around;
+    
+
+    li {
+        list-style: none;
+        display: flex;
+        width: 20%;
+        height: 40px;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid var(--gray-1);
+        border-left: none;
+        border-top: none;
+        cursor: pointer;
+        text-transform: capitalize;
+    }
+
+    li:hover {
+        font-weight: bold;
+        border: 1px solid var(--gray-2);
+    }
+}
+
+.SaveChanges button {
+    position: fixed;
+    z-index: 2;
+    right: 30px;
+    width: 100%;
+    max-width: 200px;
+    height: 50px;
+    bottom: 30px;
+    border-bottom: 2px solid var(--gray-2);
+    margin-bottom: 1px;
+}
+
 gridster{
+    padding: 0 !important;
     background-color: var(--color_p) !important;
+
+    .content-gridster{
+        position: relative;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+
+            .button-holder {
+                position: absolute;
+                top: 0;
+                right: 0;
+            }
+    }
+
+
+}
+
+.mat-drawer-container{
+    height: 90vh !important;
 }
