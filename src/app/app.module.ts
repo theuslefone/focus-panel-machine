@@ -7,6 +7,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
+
 // ANGULAR MATERIAL
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -20,6 +21,7 @@ import axios from 'axios';
 
 // Others
 import { GridsterModule ,GridsterComponent, GridsterItemComponent} from 'angular-gridster2';
+import { LocalStorageService } from './services/localstorage.service';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,9 @@ import { GridsterModule ,GridsterComponent, GridsterItemComponent} from 'angular
     GridsterItemComponent,
     GridsterModule 
     ],
-  providers: [],
+  providers: [
+    LocalStorageService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

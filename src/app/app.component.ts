@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ImageService } from './services/images/images.service';
 import { MachineDataService } from './services/machine/machine-data.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -14,17 +14,25 @@ export class AppComponent implements OnInit {
   logoPath!: string;
   machineList: any;
   gridOptions: any;
+  machineId: any;
 
   constructor(
     private imageService: ImageService,
     private machineDataService: MachineDataService,
     private router: Router,
+    private route: ActivatedRoute,
   ) {}
+  
 
   ngOnInit(): void {
     this.logoPath = this.imageService.getImagePath('logo') ?? "";
     this.fetchMachineData();
+    
+    this.route.params.subscribe(params => {
+      this.machineId = params['id'];
+    });
   }
+
 
   async fetchMachineData() {
     try {

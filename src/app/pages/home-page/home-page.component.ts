@@ -63,16 +63,16 @@ export class HomePageComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.machineId = params['id'];
       this.loadMachineData(this.machineId);
+      this.unsavedChanges = false;
     });
 
     this.options = {
       gridType: GridType.Fixed,
       displayGrid: DisplayGrid.Always,
-      fixedColWidth: 105,
-      fixedRowHeight: 105,
-      keepFixedHeightInMobile: false,
-      keepFixedWidthInMobile: false,
-      mobileBreakpoint: 640,
+      fixedColWidth: 150,
+      fixedRowHeight: 150,
+      keepFixedHeightInMobile: true,
+      keepFixedWidthInMobile: true,
       useBodyForBreakpoint: false,
       pushItems: true,
       rowHeightRatio: 1,
@@ -165,7 +165,7 @@ export class HomePageComponent implements OnInit {
 
   saveDashboardLayout(): void {
     try {
-      this.localStorageService.saveFromDashboard(`dashboard_${this.machineId}`, JSON.stringify(this.dashboard));
+      this.localStorageService.saveFromDashboard(localStorage ,`dashboard_${this.machineId}`, JSON.stringify(this.dashboard));
       console.log('Layout do dashboard salvo com sucesso.');
       this.unsavedChanges = false;
     } catch (error) {
@@ -174,7 +174,7 @@ export class HomePageComponent implements OnInit {
   }
 
   getDashboard(): void {
-      this.dashboard =  this.localStorageService.getDashboard(this.machineId);
+      this.dashboard =  this.localStorageService.getDashboard(localStorage, this.machineId);
   }
   
 }
