@@ -25,13 +25,6 @@ Com o seguimento do projeto, podemos analisar mais funções mas de antemão pod
 
 Salvar mais de um dashboard por CLP
 Renomear dashboards salvos
-COMPLETAR...
- 
-
-
-## Code scaffolding
-
-## Build
-
-
-## Running unit tests
+Ter mais opções de gráficos
+Personalização do grid... (https://tiberiuzuld.github.io/angular-gridster2/displayGrid)
+Podemos personalizar muito.
