@@ -69,14 +69,15 @@ export class HomePageComponent implements OnInit {
     this.options = {
       gridType: GridType.Fixed,
       displayGrid: DisplayGrid.None,
-      fixedColWidth: 150,
-      fixedRowHeight: 150,
+      fixedColWidth: 250,
+      fixedRowHeight: 250,
       keepFixedHeightInMobile: true,
       keepFixedWidthInMobile: true,
       useBodyForBreakpoint: false,
       mobileBreakpoint: 500,
       pushItems: true,
       rowHeightRatio: 1,
+      setGridSize: false,
       draggable: {
         enabled: true
       },
@@ -174,7 +175,7 @@ export class HomePageComponent implements OnInit {
 
   saveDashboardLayout(): void {
     try {
-      this.localStorageService.saveFromDashboard(localStorage ,`dashboard_${this.machineId}`, JSON.stringify(this.dashboard));
+      this.localStorageService.saveFromDashboard(localStorage ,`dashboard_${this.machineDataService.idClient}-${this.machineId}`, JSON.stringify(this.dashboard));
       console.log('Layout do dashboard salvo com sucesso.');
       this.unsavedChanges = false;
     } catch (error) {
