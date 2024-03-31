@@ -27,6 +27,10 @@
         </button>
       </mat-menu>
     </div>
+    <div class="chart">
+      <p>{{ item['key'] }}</p>
+      <p *ngIf="item['id']">ID: {{ item['id'] }}</p>
+    </div>
   </div>
   </gridster-item>
 </gridster>
