@@ -1,30 +1,31 @@
 # FocusPanelMachine
 
-Esse projeto foi gerado com [Angular CLI](https://github.com/angular/angular-cli) version 17.2.3.
+Este projeto foi gerado com o [Angular CLI](https://github.com/angular/angular-cli) versão 17.2.3.
 
-## Development server
+## Servidor de Desenvolvimento
 
-Pra começar, você precisa ter o node.js e o angular instalados na sua máquina.
+Antes de começar, certifique-se de ter o Node.js e o Angular instalados em sua máquina. Você também precisará instalar globalmente o `json-server`.
 
-Logo em seguida, com tudo configurado execute os seguintes comandos:
+```bash
+npm install -g json-server
 
-npm install -- Baixar os pacotes necessários
-npm run server -- Rodar servidor json (dados mockados)
-npm run start -- Rodar aplicação 
+Após as instalações, execute os seguintes comandos:
 
-## Sobre o sistema
+npm install # Baixar os pacotes necessários
+npm run server # Rodar o servidor json (dados mockados)
+npm run start # Rodar a aplicação
 
-Atualmente, como MVP está fazendo as seguintes funções:
+Sobre o Sistema
+Atualmente, o MVP possui as seguintes funcionalidades:
 
-Adiciona gráfico ao dashboard
-Remove gráfico do dashboard
-Salva dashboard criado no localstorage
-Recebe dados do servidor em tempo real
+Adição de gráficos ao dashboard
+Remoção de gráficos do dashboard
+Salvamento do dashboard criado no local storage
+Recebimento de dados do servidor em tempo real
+Para as próximas etapas do projeto, consideramos implementar:
 
-Com o seguimento do projeto, podemos analisar mais funções mas de antemão poderemos ter coisas como:
-
-Salvar mais de um dashboard por CLP
-Renomear dashboards salvos
-Ter mais opções de gráficos
-Personalização do grid... (https://tiberiuzuld.github.io/angular-gridster2/displayGrid)
-Podemos personalizar muito.
+Salvamento de mais de um dashboard por CLP
+Renomeação de dashboards salvos
+Adição de mais opções de gráficos
+Personalização do grid (https://tiberiuzuld.github.io/angular-gridster2/displayGrid)
+Continuaremos buscando maneiras de melhorar e expandir as funcionalidades do sistema.
