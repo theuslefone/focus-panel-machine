@@ -3,6 +3,7 @@ import { ImageService } from './services/images/images.service';
 import { MachineDataService } from './services/machine/machine-data.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -15,6 +16,7 @@ export class AppComponent implements OnInit {
   machineList: any;
   gridOptions: any;
   machineId: any;
+  machineStatus : any;
 
   constructor(
     private imageService: ImageService,
@@ -27,16 +29,18 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.logoPath = this.imageService.getImagePath('logo') ?? "";
     this.fetchMachineData();
-    
-    this.route.params.subscribe(params => {
-      this.machineId = params['id'];
-    });
   }
 
 
   async fetchMachineData() {
+    this.route.params.subscribe(params => {
+      this.machineId = params['id'];
+    });
+
     try {
       this.machineList = await this.machineDataService.getMachine();
+      this.machineStatus = this.machineDataService.getMachineById(this.machineId);
+      console.log(this.machineId);
     } catch (error) {
       console.error('Failed to fetch machine data:', error);
     }

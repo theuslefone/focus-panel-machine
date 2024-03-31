@@ -1,11 +1,27 @@
 <div class="home-header">
+  <button mat-icon-button color="accent" class="menu-button" aria-label="Toggle menu" (click)="sidenav.toggle()">
+   <mat-icon>{{ sidenav.opened ? 'close' : 'menu' }}</mat-icon>
+  </button>
+
   <div class="logo-area">
     <img [src]="logoPath" alt="Focus Automação e Sistemas">
   </div>
+
+  <h1></h1>
+  <!-- <mat-form-field>
+    <mat-label>Enter a date range</mat-label>
+    <mat-date-range-input [rangePicker]="picker">
+      <input matStartDate placeholder="Start date">
+      <input matEndDate placeholder="End date">
+    </mat-date-range-input>
+    <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-date-range-picker #picker></mat-date-range-picker>
+  </mat-form-field> -->
 </div>
 
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #sidenav mode="side" opened>
+  <mat-sidenav #sidenav mode="over" opened>
     <mat-nav-list>
       @for (machine of machineList; track $index) {
       <mat-list-item  (click)="redirectToHome(machine.id)" >{{ machine.machineName }}</mat-list-item>

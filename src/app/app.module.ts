@@ -17,11 +17,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSidenav } from '@angular/material/sidenav';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import axios from 'axios';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 
 // Others
 import { GridsterModule ,GridsterComponent, GridsterItemComponent} from 'angular-gridster2';
-import { LocalStorageService } from './services/localstorage.service';
+import { LocalStorageService } from './services/localstorage/localstorage.service';
 
 @NgModule({
   declarations: [
@@ -36,6 +36,7 @@ import { LocalStorageService } from './services/localstorage.service';
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
+    MatDatepickerModule,
     BrowserAnimationsModule,
     MatToolbarModule,
     GridsterComponent,
