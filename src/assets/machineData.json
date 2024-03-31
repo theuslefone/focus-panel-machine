@@ -2,7 +2,9 @@
   "machineData" : [
     {
       "id": 1,
-      "machineName": "CLP 1",
+      "status": "1",
+      "machineName": "CLP 01",
+      "idClient": "001",
       "data":{
         "vazao": [
           { "timestamp": "2024-03-05T08:00:00Z", "valor": 50 },
@@ -68,7 +70,9 @@
     },
     {
       "id": 2,
-      "machineName": "CLP 2",
+      "status": "1",
+      "machineName": "CLP 02",
+      "idClient": "001",
       "data":{
         "volume": [
           { "timestamp": "2024-03-05T08:00:00Z", "valor": 50 },
@@ -134,7 +138,9 @@
     },
     {
       "id": 3,
-      "machineName": "CLP 3",
+      "status": "0",
+      "machineName": "CLP 03",
+      "idClient": "001",
       "data":{
         "niveis": [
           { "timestamp": "2024-03-05T08:00:00Z", "valor": 30 },
@@ -197,6 +203,74 @@
           { "timestamp": "2024-03-05T12:30:00Z", "valor": 690 }
         ]
       }
-    }  
+    },
+    {
+      "id":42,
+      "status": "1",
+      "machineName": "CLP 01",
+      "idClient": "002",
+      "data":{
+        "volume": [
+          { "timestamp": "2024-03-05T08:00:00Z", "valor": 50 },
+          { "timestamp": "2024-03-05T08:30:00Z", "valor": 55 },
+          { "timestamp": "2024-03-05T09:00:00Z", "valor": 60 },
+          { "timestamp": "2024-03-05T09:30:00Z", "valor": 58 },
+          { "timestamp": "2024-03-05T10:00:00Z", "valor": 63 },
+          { "timestamp": "2024-03-05T10:30:00Z", "valor": 61 },
+          { "timestamp": "2024-03-05T11:00:00Z", "valor": 59 },
+          { "timestamp": "2024-03-05T11:30:00Z", "valor": 62 },
+          { "timestamp": "2024-03-05T12:00:00Z", "valor": 65 },
+          { "timestamp": "2024-03-05T12:30:00Z", "valor": 67 }
+        ],
+        "temperatura": [
+          { "timestamp": "2024-03-05T08:00:00Z", "valor": 25 },
+          { "timestamp": "2024-03-05T08:30:00Z", "valor": 26 },
+          { "timestamp": "2024-03-05T09:00:00Z", "valor": 26 },
+          { "timestamp": "2024-03-05T09:30:00Z", "valor": 27 },
+          { "timestamp": "2024-03-05T10:00:00Z", "valor": 27 },
+          { "timestamp": "2024-03-05T10:30:00Z", "valor": 28 },
+          { "timestamp": "2024-03-05T11:00:00Z", "valor": 28 },
+          { "timestamp": "2024-03-05T11:30:00Z", "valor": 29 },
+          { "timestamp": "2024-03-05T12:00:00Z", "valor": 29 },
+          { "timestamp": "2024-03-05T12:30:00Z", "valor": 30 }
+        ],
+        "pressao": [
+          { "timestamp": "2024-03-05T08:00:00Z", "valor": 100 },
+          { "timestamp": "2024-03-05T08:30:00Z", "valor": 102 },
+          { "timestamp": "2024-03-05T09:00:00Z", "valor": 105 },
+          { "timestamp": "2024-03-05T09:30:00Z", "valor": 107 },
+          { "timestamp": "2024-03-05T10:00:00Z", "valor": 108 },
+          { "timestamp": "2024-03-05T10:30:00Z", "valor": 110 },
+          { "timestamp": "2024-03-05T11:00:00Z", "valor": 112 },
+          { "timestamp": "2024-03-05T11:30:00Z", "valor": 114 },
+          { "timestamp": "2024-03-05T12:00:00Z", "valor": 115 },
+          { "timestamp": "2024-03-05T12:30:00Z", "valor": 118 }
+        ],
+        "velocidade": [
+          { "timestamp": "2024-03-05T08:00:00Z", "valor": 500 },
+          { "timestamp": "2024-03-05T08:30:00Z", "valor": 520 },
+          { "timestamp": "2024-03-05T09:00:00Z", "valor": 540 },
+          { "timestamp": "2024-03-05T09:30:00Z", "valor": 550 },
+          { "timestamp": "2024-03-05T10:00:00Z", "valor": 570 },
+          { "timestamp": "2024-03-05T10:30:00Z", "valor": 590 },
+          { "timestamp": "2024-03-05T11:00:00Z", "valor": 600 },
+          { "timestamp": "2024-03-05T11:30:00Z", "valor": 620 },
+          { "timestamp": "2024-03-05T12:00:00Z", "valor": 630 },
+          { "timestamp": "2024-03-05T12:30:00Z", "valor": 650 }
+        ],
+        "pureza": [
+          { "timestamp": "2024-03-05T08:00:00Z", "valor": 90 },
+          { "timestamp": "2024-03-05T08:30:00Z", "valor": 92 },
+          { "timestamp": "2024-03-05T09:00:00Z", "valor": 94 },
+          { "timestamp": "2024-03-05T09:30:00Z", "valor": 96 },
+          { "timestamp": "2024-03-05T10:00:00Z", "valor": 98 },
+          { "timestamp": "2024-03-05T10:30:00Z", "valor": 99 },
+          { "timestamp": "2024-03-05T11:00:00Z", "valor": 98 },
+          { "timestamp": "2024-03-05T11:30:00Z", "valor": 97 },
+          { "timestamp": "2024-03-05T12:00:00Z", "valor": 96 },
+          { "timestamp": "2024-03-05T12:30:00Z", "valor": 95 }
+        ]
+      }
+    }
   ]
 }
