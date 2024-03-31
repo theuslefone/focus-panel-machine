@@ -9,6 +9,9 @@
     flex-wrap: nowrap;
     flex-direction: row;
     justify-content: space-around;
+    position: absolute;
+    z-index: 1;
+    background: white;
     
 
     li {
@@ -44,7 +47,7 @@
 }
 
 gridster{
-    padding: 0 !important;
+    padding: 50px 10px !important;
     background-color: var(--color_p) !important;
 
     .content-gridster{
