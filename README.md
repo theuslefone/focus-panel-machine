@@ -18,16 +18,20 @@ npm run start # Rodar a aplicação
 ```
 
 ## Sobre o Sistema
-Atualmente, o MVP possui as seguintes funcionalidades:
 
-Adição de gráficos ao dashboard
-Remoção de gráficos do dashboard
-Salvamento do dashboard criado no local storage
-Recebimento de dados do servidor em tempo real
+### Funcionalidades Atuais:
 
-### Para as próximas etapas do projeto, consideramos implementar:
-Salvamento de mais de um dashboard por CLP
-Renomeação de dashboards salvos
-Adição de mais opções de gráficos
-Personalização do grid (https://tiberiuzuld.github.io/angular-gridster2/displayGrid)
-Continuaremos buscando maneiras de melhorar e expandir as funcionalidades do sistema.
+- **Inclusão de Gráficos no Dashboard:** Permite aos usuários integrar novos gráficos ao painel principal para uma análise visual detalhada dos dados.
+- **Remoção de Gráficos do Dashboard:** Fornece a funcionalidade de retirar gráficos existentes do painel, garantindo flexibilidade na personalização do layout.
+- **Preservação do Layout do Dashboard:** Oferece aos usuários a capacidade de salvar a configuração personalizada do dashboard localmente, garantindo consistência e facilidade de acesso.
+- **Atualização em Tempo Real dos Dados:** Mantém os dados do servidor atualizados automaticamente, garantindo que as informações exibidas no painel estejam sempre precisas e atualizadas.
+
+### Próximas Etapas do Projeto:
+
+- **Armazenamento de Múltiplos Dashboards por CLP:** Implementação da capacidade de salvar e gerenciar diversos dashboards por CLP, proporcionando uma organização mais eficiente dos dados, podendo definir um nome para cada configuração.
+- **Expansão das Opções de Gráficos:** Adicionando opções de gráficos diferentes para o mesmo dado.
+- **Personalização Avançada do Grid:** Oferecerá opções avançadas de personalização do layout do grid para uma adaptação mais precisa e flexível do painel às preferências individuais dos usuários.
+- **Otimização do Desempenho:** Melhoria da eficiência e desempenho do sistema para lidar com grandes conjuntos de dados e aumentar a velocidade de carregamento do dashboard.
+- **Suporte a Dashboard Responsivo:** Implementação de recursos para tornar o dashboard responsivo, garantindo uma visualização adequada em diferentes dispositivos e tamanhos de tela.
+- **Controle de Acesso e Permissões:** Adição de funcionalidades de controle de acesso e permissões para garantir a segurança e a privacidade dos dados do dashboard.
+- **Exportação de Dados e Relatórios:** Implementação de recursos para exportar dados e relatórios do dashboard em vários formatos, como PDF ou CSV, para compartilhamento e análise externa.
