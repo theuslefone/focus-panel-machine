@@ -21,7 +21,7 @@
 </div>
 
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #sidenav mode="over" opened>
+  <mat-sidenav #sidenav mode="over" opened="false">
     <mat-nav-list>
       @for (machine of machineList; track $index) {
       <mat-list-item  (click)="redirectToHome(machine.id)" >{{ machine.machineName }}</mat-list-item>
