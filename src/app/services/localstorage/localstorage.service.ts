@@ -23,7 +23,7 @@ export class LocalStorageService {
      return JSON.parse(savedLayout);
     } else {
       return [
-        { cols: 3, rows: 2, y: 2, x: 3 },
+        { cols: 3, rows: 2, y: 2, x: 3, key: 'Começe adicionando um gráfico' },
       ];
     }
   }
