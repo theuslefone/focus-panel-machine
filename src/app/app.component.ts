@@ -17,6 +17,7 @@ export class AppComponent implements OnInit {
   gridOptions: any;
   machineId: any;
   machineStatus : any;
+  idClient: string = '001';
 
   constructor(
     private imageService: ImageService,
@@ -31,14 +32,13 @@ export class AppComponent implements OnInit {
     this.fetchMachineData();
   }
 
-
   async fetchMachineData() {
     this.route.params.subscribe(params => {
       this.machineId = params['id'];
     });
 
     try {
-      this.machineList = await this.machineDataService.getMachine();
+      this.machineList = await this.machineDataService.getMachine(this.idClient);
       this.machineStatus = this.machineDataService.getMachineById(this.machineId);
       console.log(this.machineId);
     } catch (error) {

@@ -10,11 +10,12 @@ import { error } from 'console';
 export class MachineDataService {
 
   private apiUrl = 'http://localhost:3333/machineData/';
-
+  idClient: string = '';
   constructor() { }
 
-  getMachine(): Promise<any> {
-    return axios.get(this.apiUrl, {
+  getMachine(idClient:string): Promise<any> {
+    this.idClient = idClient;
+    return axios.get(`${this.apiUrl}?idClient=${idClient}`, {
       headers: {
         'Accept': 'application/json'
       }
@@ -24,10 +25,11 @@ export class MachineDataService {
         throw err;
       });
   }
+  
 
   async getMachineById(id: any): Promise<any> {
     try {
-      let machines = await this.getMachine();
+      let machines = await this.getMachine(this.idClient);
       let machine;
       for (let i = 0; i < machines.length; i++) {
         if (machines[i].id == id) {

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { MachineDataService } from '../machine/machine-data.service';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +8,8 @@ import { Injectable } from '@angular/core';
 export class LocalStorageService { 
 
   
-  constructor(
+  constructor(   
+    private machineDataService: MachineDataService,
   )
   { 
     
@@ -18,12 +20,12 @@ export class LocalStorageService {
   }
 
   getDashboard(storage:any, machineId:string): any {
-    let savedLayout = storage.getItem(`dashboard_${machineId}`);
+    let savedLayout = storage.getItem(`dashboard_${this.machineDataService.idClient}-${machineId}`);
     if (savedLayout) {
      return JSON.parse(savedLayout);
     } else {
       return [
-        { cols: 3, rows: 2, y: 2, x: 3, key: 'Começe adicionando um gráfico' },
+        { cols: 3, rows: 2, y: 0, x: 0, key: 'Começe adicionando um gráfico' },
       ];
     }
   }
