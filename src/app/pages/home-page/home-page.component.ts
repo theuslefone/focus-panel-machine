@@ -22,7 +22,7 @@ import {
   GridType,
   DisplayGrid
 } from 'angular-gridster2';
-import { LocalStorageService } from '../../services/localstorage.service';
+import { LocalStorageService } from '../../services/localstorage/localstorage.service';
 
 @Component({
   selector: 'app-home-page',
@@ -57,7 +57,7 @@ export class HomePageComponent implements OnInit {
     private localStorageService: LocalStorageService
     ) { 
       
-    }
+  }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -68,12 +68,13 @@ export class HomePageComponent implements OnInit {
 
     this.options = {
       gridType: GridType.Fixed,
-      displayGrid: DisplayGrid.Always,
+      displayGrid: DisplayGrid.None,
       fixedColWidth: 150,
       fixedRowHeight: 150,
       keepFixedHeightInMobile: true,
       keepFixedWidthInMobile: true,
       useBodyForBreakpoint: false,
+      mobileBreakpoint: 500,
       pushItems: true,
       rowHeightRatio: 1,
       draggable: {
@@ -83,10 +84,6 @@ export class HomePageComponent implements OnInit {
         enabled: true
       }
     };
-
-    this.route.params.subscribe(params => {
-      this.loadMachineData(params['id']);
-    });
   }
 
   async loadMachineData(machineId: any): Promise<void> {
@@ -129,9 +126,21 @@ export class HomePageComponent implements OnInit {
     this.dashboard.splice(this.dashboard.indexOf(item), 1);
   }
 
-  addItem(id:any): void {
-    this.dashboard.push({ x: 0, y: 0, cols: 1, rows: 1 });
+  addItem(key:any): void {
+    this.dashboard.push(
+      { x: 0,
+        y: 0,
+        cols: 2,
+        rows: 1,
+        id: this.generateUniqueId(key),
+        machineId: this.machineId, 
+        key: key,
+       });
     this.unsaveChanges();
+  }
+
+  generateUniqueId(key: any): string {
+    return key + '_' + Math.random().toString(36).substr(2, 9);
   }
 
   initItem(item: GridsterItem, itemComponent: GridsterItemComponent): void {
