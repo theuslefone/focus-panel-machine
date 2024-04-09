@@ -4,7 +4,7 @@
       "id": 1,
       "status": 1,
       "machineName": "CLP 01",
-      "idClient": "001",
+      "idClient": "1",
       "data":{
         "vazao": [
           { "timestamp": "2024-03-05T08:00:00Z", "valor": 50 },
@@ -72,7 +72,7 @@
       "id": 2,
       "status": 1,
       "machineName": "CLP 02",
-      "idClient": "001",
+      "idClient": "1",
       "data":{
         "volume": [
           { "timestamp": "2024-03-05T08:00:00Z", "valor": 50 },
@@ -140,7 +140,7 @@
       "id": 3,
       "status": 0,
       "machineName": "CLP 03",
-      "idClient": "001",
+      "idClient": "1",
       "data":{
         "niveis": [
           { "timestamp": "2024-03-05T08:00:00Z", "valor": 30 },
