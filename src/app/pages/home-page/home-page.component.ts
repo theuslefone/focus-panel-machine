@@ -22,7 +22,6 @@ import {
   GridType,
   DisplayGrid
 } from 'angular-gridster2';
-import { LocalStorageService } from '../../services/localstorage/localstorage.service';
 import { DashboardService } from '../../services/dashboard/dashboard.service';
 
 @Component({
@@ -47,15 +46,15 @@ export class HomePageComponent implements OnInit {
   options!: GridsterConfig;
   dashboard!: GridsterItem[];
   itemToPush!: GridsterItemComponent;
-  machineId! : any;
+  idClp! : any;
   machineList: any;
   unsavedChanges : boolean = false;
+  idClient : string = ''; 
  
   constructor(
     private route: ActivatedRoute,
     private machineDataService: MachineDataService,
     private cdr: ChangeDetectorRef,
-    private localStorageService: LocalStorageService,
     private dashboardService : DashboardService
     ) { 
       
@@ -63,58 +62,80 @@ export class HomePageComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      this.machineId = params['id'];
+      this.idClient = params['idClient']
+      this.idClp = params['id'];
       this.options = {};
-      this.loadMachineData(this.machineId);
+      this.dashboard = [];
       this.unsavedChanges = false;
+
+      this.loadMachineData(this.idClp);
     });
 
  
   }
 
-  async loadMachineData(machineId: any): Promise<void> {
+  async loadMachineData(idClp: any): Promise<void> {
     try {
-      let dashboardArray =  await this.dashboardService.getDashboard('1', '1');
-      
-      for (const key in dashboardArray[0].options) {
-        if (dashboardArray[0].options.hasOwnProperty(key)) {
-          this.options[key] = dashboardArray[0].options[key];
-        } else {
-          this.options = {
-            gridType: GridType.Fixed,
-            displayGrid: DisplayGrid.None,
-            fixedColWidth: 250,
-            fixedRowHeight: 250,
-            keepFixedHeightInMobile: true,
-            keepFixedWidthInMobile: true,
-            useBodyForBreakpoint: false,
-            mobileBreakpoint: 500,
-            pushItems: true,
-            rowHeightRatio: 1,
-            setGridSize: false,
-            draggable: {
-              enabled: true
-            },
-            resizable: {
-              enabled: true
-            }
-          };
+      let dashboardArray =  await this.dashboardService.getDashboard(this.idClient, this.idClp);
+
+      const dashboardOptions = JSON.parse(await dashboardArray[0].options);
+      if(dashboardOptions){
+        for (const key in this.options) {
+          if (dashboardOptions.hasOwnProperty(key)) {
+            this.options[key] = dashboardOptions[key];
+          }
         }
+      } else{
+        this.options = {
+          gridType: GridType.Fixed,
+          displayGrid: DisplayGrid.None,
+          fixedColWidth: 250,
+          fixedRowHeight: 250,
+          keepFixedHeightInMobile: true,
+          keepFixedWidthInMobile: true,
+          useBodyForBreakpoint: false,
+          mobileBreakpoint: 500,
+          pushItems: true,
+          rowHeightRatio: 1,
+          setGridSize: false,
+          draggable: {
+            enabled: true
+          },
+          resizable: {
+            enabled: true
+          }
+        };
       }
 
-      this.machineList = await this.machineDataService.getMachineById(machineId);
-      this.machineList = this.machineList.data;
+      const dashboardLayout = JSON.parse(await dashboardArray[0].dashboard);
+      if(dashboardLayout){
+        this.dashboard.push({
+          x: dashboardLayout.x,
+          y: dashboardLayout.y,
+          key: dashboardLayout.key,
+          cols: dashboardLayout.cols,
+          rows: dashboardLayout.rows
+        });
+      } else {
+        const defaultDashboardLayout = { x: 0, y: 0, key: 'Começe adicionando um gráfico', cols: 3, rows: 2 };
+        this.dashboard.push(defaultDashboardLayout);
+      }
       
-      this.getDashboard()
+      const machineListResponse = await this.machineDataService.getMachineById(idClp);
+      if (machineListResponse && machineListResponse.data) {
+        this.machineList = await this.machineDataService.getMachineById(idClp);
+        this.machineList = this.machineList.data;
+      }
       this.cdr.detectChanges(); 
+
     } catch (error) {
       console.error('Failed to load machine data:', error);
     }
   }
 
-  async loadAllMachineData(machineId: any): Promise<void> {
+  async loadAllMachineData(idClp: any): Promise<void> {
     try {
-      this.machineList = await this.machineDataService.getMachineById(machineId);
+      this.machineList = await this.machineDataService.getMachineById(idClp);
       this.cdr.detectChanges(); 
     } catch (error) {
       console.error('Failed to load machine data:', error);
@@ -122,7 +143,7 @@ export class HomePageComponent implements OnInit {
   }
 
   async changeMachine(){
-    this.loadMachineData(this.machineId);
+    this.loadMachineData(this.idClp);
   }
 
   unsaveChanges(): void {
@@ -146,9 +167,9 @@ export class HomePageComponent implements OnInit {
       { x: 0,
         y: 0,
         cols: 2,
-        rows: 1,
+        rows: 2,
         id: this.generateUniqueId(key),
-        machineId: this.machineId, 
+        idClp: this.idClp, 
         key: key,
        });
     this.unsaveChanges();
@@ -183,22 +204,16 @@ export class HomePageComponent implements OnInit {
 
   getItemComponent(): void {
     if (this.options.api && this.options.api.getItemComponent) {
-      console.log(this.options.api.getItemComponent(this.dashboard[0]));
     }
   }
 
-  saveDashboardLayout(): void {
+  async saveDashboardLayout(): Promise<void> {
     try {
-      // this.localStorageService.saveFromDashboard(localStorage ,`dashboard_${this.machineDataService.idClient}-${this.machineId}`, JSON.stringify(this.dashboard));
+      await this.dashboardService.saveDashboard(this.idClient, this.idClp, this.dashboard);
       console.log('Layout do dashboard salvo com sucesso.');
       this.unsavedChanges = false;
     } catch (error) {
       console.error('Erro ao tentar salvar o layout do dashboard:', error);
     }
   }
-
-  getDashboard(): void {
-      this.dashboard =  this.localStorageService.getDashboard(this.machineId);
-  }
-  
 }

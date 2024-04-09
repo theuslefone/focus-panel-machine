@@ -16,9 +16,9 @@ export class AppComponent implements OnInit {
   logoPath!: string;
   machineList: any;
   gridOptions: any;
-  machineId: any;
+  idClp: any;
   machineStatus : any;
-  idClient: string = '001';
+  idClient: any;
 
   constructor(
     private imageService: ImageService,
@@ -33,22 +33,24 @@ export class AppComponent implements OnInit {
     this.logoPath = this.imageService.getImagePath('logo') ?? "";
     this.fetchMachineData();
   }
+  
 
   async fetchMachineData() {
-    this.route.params.subscribe(params => {
-      this.machineId = params['id'];
+    this.route.paramMap.subscribe(async params => {
+      this.idClient = params.get('idClient') || '1'; 
+      this.idClp = params.get('idClp') || '2'; 
+      
+      try {
+        this.machineList = await this.machineDataService.getMachine(this.idClient);
+        this.machineStatus = this.machineDataService.getMachineById(this.idClp);
+      } catch (error) {
+        console.error('Failed to fetch machine data:', error);
+      }
     });
-
-    try {
-      this.machineList = await this.machineDataService.getMachine(this.idClient);
-      this.machineStatus = this.machineDataService.getMachineById(this.machineId);
-      console.log(this.machineId);
-    } catch (error) {
-      console.error('Failed to fetch machine data:', error);
-    }
   }
 
-  redirectToHome(machineId: number) {
-    this.router.navigate(['/home', machineId]);
+  redirectToHome(idClient: any, idClp: any) {
+    this.router.navigate(['/home', idClient, idClp]);
   }
+    
 }

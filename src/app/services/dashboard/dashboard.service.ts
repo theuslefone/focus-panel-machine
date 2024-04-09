@@ -11,8 +11,8 @@ export class DashboardService {
 
   constructor() { }
 
-  async saveData(machineId: string, data: any, idClient: string): Promise<any> {
-    const url = `${this.apiUrl}/${idClient}/${machineId}`;
+  async saveData(idClient: string, idClp: string, data: any): Promise<any> {
+    const url = `${this.apiUrl}/${idClient}/${idClp}`;
     try {
       const response = await axios.put(url, data);
       return response.data;
@@ -21,8 +21,8 @@ export class DashboardService {
     }
   }
 
-  async getData(machineId: string, idClient: string): Promise<any> {
-    const url = `${this.apiUrl}/${idClient}/${machineId}`;
+  async getData(idClient: string, idClp: string): Promise<any> {
+    const url = `${this.apiUrl}/${idClient}/${idClp}`;
     try {
       const response = await axios.get(url);
       return response.data;
@@ -31,13 +31,17 @@ export class DashboardService {
     }
   }
 
-  saveFromDashboard(storage:any, key:string, dashboard:any){
-    storage.setItem(key, dashboard);
+  async saveDashboard(idClient: string, idClp: string, dashboard: any ): Promise<any> {
+    try {
+      return await this.saveData(idClient, idClp, dashboard);
+    } catch (error) {
+      throw error;
+    }
   }
 
-  async getDashboard(machineId:string, idClient:string): Promise<any> {
+  async getDashboard(idClp:string, idClient:string): Promise<any> {
     try {
-      const savedLayout = await this.getData(idClient, machineId);
+      const savedLayout = await this.getData(idClient, idClp);
       return savedLayout;
     } catch (error) {
       console.error('Error fetching dashboard:', error);

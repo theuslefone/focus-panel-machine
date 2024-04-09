@@ -9,13 +9,13 @@ import { error } from 'console';
 
 export class MachineDataService {
 
-  private apiUrl = 'http://localhost:3333/machineData/';
+  private apiUrl = 'http://localhost:3000/api/clp_data';
   idClient: string = '';
   constructor() { }
 
   getMachine(idClient:string): Promise<any> {
     this.idClient = idClient;
-    return axios.get(`${this.apiUrl}?idClient=${idClient}`, {
+    return axios.get(`${this.apiUrl}/${idClient}`, {
       headers: {
         'Accept': 'application/json'
       }
@@ -25,7 +25,6 @@ export class MachineDataService {
         throw err;
       });
   }
-  
 
   async getMachineById(id: any): Promise<any> {
     try {

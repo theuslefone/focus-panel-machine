@@ -1,12 +1,13 @@
 <div *ngIf="unsavedChanges" class="SaveChanges">
-  <button mat-raised-button (click)="saveDashboardLayout()">Save changes</button>
+  <button mat-raised-button (click)="saveDashboardLayout()">Salvar alterações</button>
 </div>
 
 <ul class="options-header">
-  <li (click)="addItem(item.key)" class="add-button cols-2" *ngFor="let item of machineList | keyvalue">
-    {{ item.key }}
+  <li (click)="addItem(machine.name)" class="add-button cols-2" *ngFor="let machine of machineList">
+    {{ machine.name }}
   </li>
 </ul>
+
 
 <gridster [options]="options">
   <gridster-item 

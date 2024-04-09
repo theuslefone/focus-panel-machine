@@ -1,7 +1,7 @@
 <div class="home-header">
   <button mat-icon-button color="accent" class="menu-button" aria-label="Toggle menu" (click)="sidenav.toggle()">
-   <mat-icon>{{ sidenav.opened ? 'close' : 'menu' }}</mat-icon>
-  </button>
+    <mat-icon>{{ sidenav.opened ? 'close' : 'menu' }}</mat-icon>
+   </button>
 
   <div class="logo-area">
     <a href="https://focusautomacao.com.br/" target="_blank">
@@ -9,32 +9,21 @@
     </a>
   </div>
 
-  <h1></h1>
-  <!-- <mat-form-field>
-    <mat-label>Enter a date range</mat-label>
-    <mat-date-range-input [rangePicker]="picker">
-      <input matStartDate placeholder="Start date">
-      <input matEndDate placeholder="End date">
-    </mat-date-range-input>
-    <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-date-range-picker #picker></mat-date-range-picker>
-  </mat-form-field> -->
+  <h1>{{ 'CLP ' + (idClp ? idClp.toString().padStart(2, '0') : '01') }}</h1>
 </div>
 
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav #sidenav mode="over" opened="false">
     <mat-nav-list>
-      @for (machine of machineList; track $index) {
-      <mat-list-item  (click)="redirectToHome(machine.id)" >{{ machine.machineName }}</mat-list-item>
-      } @empty {
-        <p>Não há dados disponíveis</p>
-      }
+      <ng-container *ngIf="machineList && machineList.length > 0; else noData">
+        <mat-list-item *ngFor="let machine of machineList; let i = index" (click)="redirectToHome(this.idClient, machine.id)">
+          {{ 'CLP ' + (i + 1).toString().padStart(2, '0') }}
+        </mat-list-item>
+      </ng-container>
+      <ng-template #noData>
+        <mat-list-item>
+          Não há dados disponíveis
+        </mat-list-item>
+      </ng-template>
     </mat-nav-list>
   </mat-sidenav>
-
-  <mat-sidenav-content>
-    <router-outlet></router-outlet>
-  </mat-sidenav-content>
-
-</mat-sidenav-container>
