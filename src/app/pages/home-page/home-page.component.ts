@@ -23,6 +23,7 @@ import {
   DisplayGrid
 } from 'angular-gridster2';
 import { LocalStorageService } from '../../services/localstorage/localstorage.service';
+import { DashboardService } from '../../services/dashboard/dashboard.service';
 
 @Component({
   selector: 'app-home-page',
@@ -54,7 +55,8 @@ export class HomePageComponent implements OnInit {
     private route: ActivatedRoute,
     private machineDataService: MachineDataService,
     private cdr: ChangeDetectorRef,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private dashboardService : DashboardService
     ) { 
       
   }
@@ -62,35 +64,47 @@ export class HomePageComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.machineId = params['id'];
+      this.options = {};
       this.loadMachineData(this.machineId);
       this.unsavedChanges = false;
     });
 
-    this.options = {
-      gridType: GridType.Fixed,
-      displayGrid: DisplayGrid.None,
-      fixedColWidth: 250,
-      fixedRowHeight: 250,
-      keepFixedHeightInMobile: true,
-      keepFixedWidthInMobile: true,
-      useBodyForBreakpoint: false,
-      mobileBreakpoint: 500,
-      pushItems: true,
-      rowHeightRatio: 1,
-      setGridSize: false,
-      draggable: {
-        enabled: true
-      },
-      resizable: {
-        enabled: true
-      }
-    };
+ 
   }
 
   async loadMachineData(machineId: any): Promise<void> {
     try {
+      let dashboardArray =  await this.dashboardService.getDashboard('1', '1');
+      
+      for (const key in dashboardArray[0].options) {
+        if (dashboardArray[0].options.hasOwnProperty(key)) {
+          this.options[key] = dashboardArray[0].options[key];
+        } else {
+          this.options = {
+            gridType: GridType.Fixed,
+            displayGrid: DisplayGrid.None,
+            fixedColWidth: 250,
+            fixedRowHeight: 250,
+            keepFixedHeightInMobile: true,
+            keepFixedWidthInMobile: true,
+            useBodyForBreakpoint: false,
+            mobileBreakpoint: 500,
+            pushItems: true,
+            rowHeightRatio: 1,
+            setGridSize: false,
+            draggable: {
+              enabled: true
+            },
+            resizable: {
+              enabled: true
+            }
+          };
+        }
+      }
+
       this.machineList = await this.machineDataService.getMachineById(machineId);
       this.machineList = this.machineList.data;
+      
       this.getDashboard()
       this.cdr.detectChanges(); 
     } catch (error) {
@@ -175,7 +189,7 @@ export class HomePageComponent implements OnInit {
 
   saveDashboardLayout(): void {
     try {
-      this.localStorageService.saveFromDashboard(localStorage ,`dashboard_${this.machineDataService.idClient}-${this.machineId}`, JSON.stringify(this.dashboard));
+      // this.localStorageService.saveFromDashboard(localStorage ,`dashboard_${this.machineDataService.idClient}-${this.machineId}`, JSON.stringify(this.dashboard));
       console.log('Layout do dashboard salvo com sucesso.');
       this.unsavedChanges = false;
     } catch (error) {
@@ -184,7 +198,7 @@ export class HomePageComponent implements OnInit {
   }
 
   getDashboard(): void {
-      this.dashboard =  this.localStorageService.getDashboard(localStorage, this.machineId);
+      this.dashboard =  this.localStorageService.getDashboard(this.machineId);
   }
   
 }

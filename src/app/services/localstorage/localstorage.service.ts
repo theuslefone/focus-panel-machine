@@ -15,14 +15,20 @@ export class LocalStorageService {
     
   }
 
-  saveFromDashboard(storage:any, key:string, dashboard:any){
-    storage.setItem(key, dashboard);
+  saveFromDashboard(key:string, dashboard:any){
+    
   }
 
-  getDashboard(storage:any, machineId:string): any {
-    let savedLayout = storage.getItem(`dashboard_${this.machineDataService.idClient}-${machineId}`);
+  getDashboard(machineId:string): any {
+  
+
+    return [
+      { cols: 3, rows: 2, y: 0, x: 0, key: 'Começe adicionando um gráfico' },
+    ];
+
+    let savedLayout = ''; // storage.getItem(`dashboard_${this.machineDataService.idClient}-${machineId}`);
     if (savedLayout) {
-     return JSON.parse(savedLayout);
+    return JSON.parse(savedLayout);
     } else {
       return [
         { cols: 3, rows: 2, y: 0, x: 0, key: 'Começe adicionando um gráfico' },

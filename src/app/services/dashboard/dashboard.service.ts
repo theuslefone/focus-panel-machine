@@ -1,5 +1,5 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import axios from 'axios';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -7,27 +7,41 @@ import { Observable } from 'rxjs';
 })
 export class DashboardService {
 
-  private apiUrl = 'http://localhost:3331/'; // URL base da sua API Node.js
+  private apiUrl = 'http://localhost:3000/api/dashboard'; 
 
-  constructor(private http: HttpClient) { }
+  constructor() { }
 
-  saveData(machineId: string, data: any, idClient: string): Observable<any> {
-    const url = `${this.apiUrl}/${machineId}?idClient=${idClient}`;
-    return this.http.post(url, data);
+  async saveData(machineId: string, data: any, idClient: string): Promise<any> {
+    const url = `${this.apiUrl}/${idClient}/${machineId}`;
+    try {
+      const response = await axios.put(url, data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  getData(machineId: string, idClient: string): Observable<any> {
-    const url = `${this.apiUrl}/${machineId}?idClient=${idClient}`;
-    return this.http.get(url);
+  async getData(machineId: string, idClient: string): Promise<any> {
+    const url = `${this.apiUrl}/${idClient}/${machineId}`;
+    try {
+      const response = await axios.get(url);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  getMachineData(machineId: string, idClient: string): Observable<any> {
-    const url = `${this.apiUrl}/machine/${machineId}?idClient=${idClient}`;
-    return this.http.get(url);
+  saveFromDashboard(storage:any, key:string, dashboard:any){
+    storage.setItem(key, dashboard);
   }
 
-  getMachineDataByKey(machineId: string, key: string, idClient: string): Observable<any> {
-    const url = `${this.apiUrl}/machine/${machineId}/${key}?idClient=${idClient}`;
-    return this.http.get(url);
+  async getDashboard(machineId:string, idClient:string): Promise<any> {
+    try {
+      const savedLayout = await this.getData(idClient, machineId);
+      return savedLayout;
+    } catch (error) {
+      console.error('Error fetching dashboard:', error);
+      throw error;
+    }
   }
 }

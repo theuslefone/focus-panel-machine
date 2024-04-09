@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ImageService } from './services/images/images.service';
-import { MachineDataService } from './services/machine/machine-data.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MachineDataService } from './services/machine/machine-data.service';
+import { DashboardService } from './services/dashboard/dashboard.service'; 
 
 
 @Component({
@@ -24,6 +25,7 @@ export class AppComponent implements OnInit {
     private machineDataService: MachineDataService,
     private router: Router,
     private route: ActivatedRoute,
+    private dashboardService : DashboardService,
   ) {}
   
 

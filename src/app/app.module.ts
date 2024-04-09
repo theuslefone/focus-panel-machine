@@ -21,7 +21,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 
 // Others
 import { GridsterModule ,GridsterComponent, GridsterItemComponent} from 'angular-gridster2';
-import { LocalStorageService } from './services/localstorage/localstorage.service';
+
 
 @NgModule({
   declarations: [
@@ -44,7 +44,7 @@ import { LocalStorageService } from './services/localstorage/localstorage.servic
     GridsterModule 
     ],
   providers: [
-    LocalStorageService
+    
   ],
   bootstrap: [AppComponent]
 })

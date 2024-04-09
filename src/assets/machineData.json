@@ -2,7 +2,7 @@
   "machineData" : [
     {
       "id": 1,
-      "status": "1",
+      "status": 1,
       "machineName": "CLP 01",
       "idClient": "001",
       "data":{
@@ -70,7 +70,7 @@
     },
     {
       "id": 2,
-      "status": "1",
+      "status": 1,
       "machineName": "CLP 02",
       "idClient": "001",
       "data":{
@@ -138,7 +138,7 @@
     },
     {
       "id": 3,
-      "status": "0",
+      "status": 0,
       "machineName": "CLP 03",
       "idClient": "001",
       "data":{
@@ -206,7 +206,7 @@
     },
     {
       "id":4,
-      "status": "1",
+      "status": 1,
       "machineName": "CLP 01",
       "idClient": "002",
       "data":{
