@@ -35,6 +35,8 @@ $project-studio-theme: mat.define-light-theme((
 @include mat.all-component-themes($project-studio-theme);
 @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
+@import url("https://fonts.googleapis.com/css?family=Montserrat:500,700");
+
 
 
 // ---------------------------- SCRUCTURE 
@@ -52,7 +54,7 @@ section{
   /* Cores Principais */
   --color_p: #E5ECF4;
   --color_a: #E76C1E;
-  --color_c: #5588FC;  /* Azul pastel como cor complementar */
+  --color_c: #0A2742;  /* Azul pastel como cor complementar */
 
   /* Variações Dark e Light */
   --color_pd: #0A0A0A;  /* ligeiramente mais escuro */
@@ -158,3 +160,8 @@ a.default-button:hover{
 
 
 // ---------------------------- ANIMATIONS
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

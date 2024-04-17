@@ -9,7 +9,8 @@
     </a>
   </div>
 
-  <h1>{{ 'CLP ' + (idClp ? idClp.toString().padStart(2, '0') : '01') }}</h1>
+  <h1><span><img [src]="statusImg" alt="Status"></span> {{ formatMachineName(machineName) }}</h1> <!-- Usando o operador async -->
+  
 </div>
 
 <mat-sidenav-container class="sidenav-container">
@@ -17,7 +18,7 @@
     <mat-nav-list>
       <ng-container *ngIf="machineList && machineList.length > 0; else noData">
         <mat-list-item *ngFor="let machine of machineList; let i = index" (click)="redirectToHome(this.idClient, machine.id)">
-          {{ 'CLP ' + (i + 1).toString().padStart(2, '0') }}
+          {{ formatMachineName(machine.name) }}
         </mat-list-item>
       </ng-container>
       <ng-template #noData>
@@ -27,3 +28,9 @@
       </ng-template>
     </mat-nav-list>
   </mat-sidenav>
+  <router-outlet></router-outlet>
+</mat-sidenav-container>
+
+<app-loading-overlay></app-loading-overlay>
+
+
