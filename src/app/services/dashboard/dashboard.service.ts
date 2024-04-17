@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -11,38 +11,34 @@ export class DashboardService {
 
   constructor() { }
 
-  async saveData(idClient: string, idClp: string, data: any): Promise<any> {
-    const url = `${this.apiUrl}/${idClient}/${idClp}`;
+  private async request(method: string, url: string, data?: any): Promise<any> {
     try {
-      const response = await axios.put(url, data);
+      console.log()
+      const response: AxiosResponse = await axios({ method, url, data });
       return response.data;
     } catch (error) {
       throw error;
     }
+  }
+
+  async saveData(idClient: string, idClp: string, data: any): Promise<any> {
+    console.log(data);
+    const url = `${this.apiUrl}/${idClient}/${idClp}`;
+    return await this.request('put', url, data);
   }
 
   async getData(idClient: string, idClp: string): Promise<any> {
     const url = `${this.apiUrl}/${idClient}/${idClp}`;
-    try {
-      const response = await axios.get(url);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+    return await this.request('get', url);
   }
 
-  async saveDashboard(idClient: string, idClp: string, dashboard: any ): Promise<any> {
-    try {
-      return await this.saveData(idClient, idClp, dashboard);
-    } catch (error) {
-      throw error;
-    }
+  async saveDashboard(idClient: string, idClp: string, dashboard: any): Promise<any> {
+    return await this.saveData(idClient, idClp, {"dashboard": dashboard});
   }
 
-  async getDashboard(idClp:string, idClient:string): Promise<any> {
+  async getDashboard(idClient: string, idClp: string): Promise<any> {
     try {
-      const savedLayout = await this.getData(idClient, idClp);
-      return savedLayout;
+      return await this.getData(idClient, idClp);
     } catch (error) {
       console.error('Error fetching dashboard:', error);
       throw error;
