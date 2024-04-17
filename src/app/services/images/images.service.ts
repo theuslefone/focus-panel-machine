@@ -9,6 +9,9 @@ export class ImageService {
   public imagePaths : ImagePaths  = {
     logo: 'assets/images/logo.png',
     user_template: 'assets/images/template-user.png',
+    status_1: 'assets/images/status_on.png',
+    status: 'assets/images/status.png',
+    status_0: 'assets/images/status_off.png',
   };
 
   constructor() { }
