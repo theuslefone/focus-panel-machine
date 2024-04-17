@@ -5,5 +5,5 @@ export interface ImagePaths {
 }
 
 export interface ErrorMessages {
-    [key: string]: string;
+    [key: string]: [];
 }
