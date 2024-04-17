@@ -1,47 +1,88 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import axios from 'axios';
-import { error } from 'console';
 
 @Injectable({
   providedIn: 'root'
 })
-
 export class MachineDataService {
 
-  private apiUrl = 'http://localhost:3000/api/clp_data';
+  private apiUrl = 'http://localhost:3000/api';
   idClient: string = '';
+
   constructor() { }
 
-  getMachine(idClient:string): Promise<any> {
-    this.idClient = idClient;
-    return axios.get(`${this.apiUrl}/${idClient}`, {
-      headers: {
-        'Accept': 'application/json'
-      }
-    }).then(res => res.data)
-      .catch(err => {
-        console.error(err);
-        throw err;
+  async getMachine(idClient: string): Promise<any> {
+    try {
+      const response = await fetch(`${this.apiUrl}/clp_data/${idClient}`, {
+        headers: {
+          'Accept': 'application/json'
+        }
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to get machine:', error);
+      throw error;
+    }
   }
 
-  async getMachineById(id: any): Promise<any> {
+  async getMachineById(idClient: any, id: any): Promise<any> {
     try {
-      let machines = await this.getMachine(this.idClient);
-      let machine;
-      for (let i = 0; i < machines.length; i++) {
-        if (machines[i].id == id) {
-            machine = machines[i];
-            break;
+      const response = await fetch(`${this.apiUrl}/clp_data/${idClient}/${id}`, {
+        headers: {
+          'Accept': 'application/json'
         }
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response}`);
       }
-
-      return machine || null;
+  
+      return await response.json();
     } catch (error) {
       console.error('Failed to get machine by ID:', error);
       throw error;
     }
   }
 
+  async getDataById(idClient: string, id: string): Promise<any> {
+    try {
+      const response = await fetch(`${this.apiUrl}/clp_history/${idClient}/${id}`, {
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to get data by ID:', error);
+      throw error;
+    }
+  }
+
+  async getDataByDateRangeById(idClient: string, id: string, startDate: string, endDate: string): Promise<any> {
+    try {
+      const response = await fetch(`${this.apiUrl}/clp_history/${idClient}/${id}/${startDate}/${endDate}`, {
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to get data by date range:', error);
+      throw error;
+    }
+  }
 }
