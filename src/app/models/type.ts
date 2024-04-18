@@ -1,3 +1,5 @@
+
+
 export interface ImagePaths {
     [key: string]: string;
     logo: string;
@@ -7,3 +9,4 @@ export interface ImagePaths {
 export interface ErrorMessages {
     [key: string]: [];
 }
+
