@@ -12,6 +12,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { GridsterModule } from 'angular-gridster2';
 import { LoadingOverlayComponent } from './components/loading-overlay/loading-overlay.component';
+import { provideHttpClient, withFetch } from '@angular/common/http';
+
 
 @NgModule({
   declarations: [
@@ -32,7 +34,7 @@ import { LoadingOverlayComponent } from './components/loading-overlay/loading-ov
     MatToolbarModule,
     GridsterModule,
   ],
-  providers: [],
+  providers : [provideHttpClient(withFetch())],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
