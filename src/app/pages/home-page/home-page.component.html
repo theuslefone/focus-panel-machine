@@ -28,11 +28,20 @@
         </button>
       </mat-menu>
     </div>
+
     <div class="chart">
-      <p>{{ item['key'] }}</p>
       <p *ngIf="item['id']">ID: {{ item['id'] }}</p>
+      Data:
+      <div *ngFor="let data of chartData[item['key']]">
+          <p>{{ item['key'] }} : {{ data }}</p>
+      </div>
+      <div>
+        <canvas id="chart"></canvas>
+      </div>
     </div>
+    
   </div>
   </gridster-item>
 </gridster>
+
 

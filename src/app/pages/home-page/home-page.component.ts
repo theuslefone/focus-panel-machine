@@ -10,8 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MachineDataService } from '../../services/machine/machine-data.service';
 import {MatMenuModule} from '@angular/material/menu';
-import { NavigationEnd, Router } from '@angular/router';
-
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import {
   CompactType,
   GridsterComponent,
@@ -25,7 +24,7 @@ import {
 import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { ErrorService } from '../../services/error/error.service';
 import { LoadingService } from '../../services/loading/loading.service';
-import { parse } from 'path';
+import { RouteParamsService } from '../../services/routesParams/routes-params.service';
 
 @Component({
   selector: 'app-home-page',
@@ -55,24 +54,31 @@ export class HomePageComponent implements OnInit {
   Object: any;
   machineList: any;
   machineDataChart: any;
+  chartData: { [key: string]: any } = {};
+  chartLabels: any;
+  chartType: any = 'line';
+  chart: any = [];
+
 
   constructor(
-    private router: Router,
+    private route: ActivatedRoute,
     private machineDataService: MachineDataService,
     private cdr: ChangeDetectorRef,
     private dashboardService : DashboardService,
     private errorService : ErrorService,
     private loadingService: LoadingService,
+    private routeParamsService: RouteParamsService, 
     ) { 
 
-      this.router.events.subscribe(event => {
-        if (event instanceof NavigationEnd) {
-          this.idClient = window.location.href.split('/home/')[1].split('/')[0]; 
-          this.idClp = window.location.href.split('/home/')[1].split('/')[1];
-          this.loadMachineData(this.idClient, this.idClp);
-          this.loadDashboard(this.idClient, this.idClp);
-        }
+      this.route.paramMap.subscribe(params => {
+        this.idClient = params.get('idClient') || ''; 
+        this.idClp = params.get('idClp') || ''; 
+        this.routeParamsService.setIdClient(this.idClient);
+        this.routeParamsService.setIdClp(this.idClp);
       });
+      
+      this.loadMachineData(this.idClient, this.idClp);
+      this.loadDashboard(this.idClient, this.idClp);
   }
 
   ngOnInit(): void {
@@ -98,15 +104,10 @@ export class HomePageComponent implements OnInit {
         enabled: true
       }
     };
-    this.idClient = window.location.href.split('/home/')[1].split('/')[0]; 
-    this.idClp = window.location.href.split('/home/')[1].split('/')[1];
-
-    this.loadDashboard(this.idClient, this.idClp);
-    this.loadMachineDataRealTime(this.idClient, this.idClp);
-
-    setInterval(() => {
-      this.loadMachineDataRealTime(this.idClient, this.idClp);
-    }, 5000);
+    this.route.paramMap.subscribe(params => {
+      this.idClient = params.get('idClient') || ''; 
+      this.idClp = params.get('idClp') || '';
+    });
   }  
   
   async loadDashboard(idClient: any, idClp: any): Promise<void> {
@@ -119,6 +120,10 @@ export class HomePageComponent implements OnInit {
       } else {
         this.dashboard = [defaultDashboardLayout];
       }
+
+      this.dashboard.forEach((item: any) => {
+        this.loadMachineDataRealTime(item.key, this.idClient, this.idClp);
+      });
       
       this.cdr.detectChanges(); 
     } catch (error) {
@@ -152,13 +157,18 @@ export class HomePageComponent implements OnInit {
     this.loadingService.hide();
   }
 
-  async loadMachineDataRealTime(idClient: any, idClp: any): Promise<void>{
+  async loadMachineDataRealTime(key:any, idClient: any, idClp: any): Promise<void>{
     try {
       let dataMachine = await this.machineDataService.getDataById(idClient, idClp);
-      let parsedData = JSON.parse(dataMachine[0].data).data;
-      this.machineDataChart = parsedData;
-      console.log(this.machineDataChart);
-      console.log(dataMachine);
+      this.machineDataChart = await JSON.parse(dataMachine[0].data).data;
+      
+      if (!this.chartData[key]) {
+        this.chartData[key] = [];
+      } else if (this.chartData[key].length >= 5) {
+          this.chartData[key].shift();
+      }
+
+      this.chartData[key].push([this.machineDataChart[key], dataMachine[0].date_time ]);
 
     } catch (error) {
       console.error('Failed to load machine data:', error);
@@ -186,15 +196,21 @@ export class HomePageComponent implements OnInit {
   }
 
   addItem(key:any): void {
-    this.dashboard.push(
-      { x: 0,
-        y: 0,
-        cols: 2,
-        rows: 2,
-        id: this.generateUniqueId(key),
-        idClp: this.idClp, 
-        key: key,
-       });
+    this.loadMachineDataRealTime(key, this.idClient, this.idClp);
+
+    setInterval(() => {
+      this.loadMachineDataRealTime(key, this.idClient, this.idClp);
+    }, 5000);
+
+    this.dashboard.push({ 
+      x: 0,
+      y: 0,
+      cols: 2,
+      rows: 2,
+      id: this.generateUniqueId(key),
+      idClp: this.idClp, 
+      key: key,
+    });
     this.unsaveChanges();
   }
 
@@ -203,10 +219,13 @@ export class HomePageComponent implements OnInit {
   }
 
   initItem(item: GridsterItem, itemComponent: GridsterItemComponent): void {
+    alert('initItem');
     this.itemToPush = itemComponent;
   }
 
   pushItem(): void {
+    alert('Push');
+
     const push = new GridsterPush(this.itemToPush); 
     this.itemToPush.$item.rows += 4; 
     if (push.pushItems(push.fromNorth)) {
@@ -226,6 +245,7 @@ export class HomePageComponent implements OnInit {
   }
 
   getItemComponent(): void {
+    alert('getItem')
     if (this.options.api && this.options.api.getItemComponent) {
     }
   }

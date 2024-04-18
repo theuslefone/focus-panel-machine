@@ -4,6 +4,7 @@ import { ImageService } from './services/images/images.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { MachineDataService } from './services/machine/machine-data.service';
 import { DashboardService } from './services/dashboard/dashboard.service'; 
+import { RouteParamsService } from './services/routesParams/routes-params.service';
 
 interface Machine {
   name: string;
@@ -32,7 +33,9 @@ export class AppComponent implements OnInit {
     private imageService: ImageService,
     private machineDataService: MachineDataService,
     private router: Router,
+    private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
+    private routeParamsService: RouteParamsService,
   ) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
@@ -48,8 +51,13 @@ export class AppComponent implements OnInit {
   }
   
   async fetchMachineData() {
-    this.idClient = window.location.href.split('/home/')[1].split('/')[0]; 
-    this.idClp = window.location.href.split('/home/')[1].split('/')[1];
+    this.routeParamsService.idClient$.subscribe(idClient => {
+      this.idClient = idClient;
+    });
+    this.routeParamsService.idClp$.subscribe(idClp => {
+      this.idClp = idClp;
+    });
+
     this.cdr.detectChanges(); 
     
     try {
@@ -78,7 +86,6 @@ export class AppComponent implements OnInit {
     return '';
   }
   
-
   redirectToHome(idClient: any, idClp: any) {
     this.router.navigate(['/home', idClient, idClp]);
   }
