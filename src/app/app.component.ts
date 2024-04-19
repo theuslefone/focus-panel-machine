@@ -53,12 +53,13 @@ export class AppComponent implements OnInit {
   async fetchMachineData() {
     this.routeParamsService.idClient$.subscribe(idClient => {
       this.idClient = idClient;
+      console.log(idClient);
     });
     this.routeParamsService.idClp$.subscribe(idClp => {
       this.idClp = idClp;
+      console.log(idClp);
     });
 
-    this.cdr.detectChanges(); 
     
     try {
       this.machineList = await this.machineDataService.getMachine(this.idClient);
@@ -67,8 +68,8 @@ export class AppComponent implements OnInit {
         this.statusImg = this.imageService.getImagePath('status_' + obj[0].status ) ?? "";
         this.machineName = obj[0].name;
       })
-
-
+      
+      this.cdr.detectChanges(); 
     } catch (error) {
       console.error('Failed to fetch machine data:', error);
     }
