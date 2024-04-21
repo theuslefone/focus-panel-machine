@@ -55,12 +55,17 @@ gridster{
         position: relative;
         display: flex !important;
         align-items: center;
+        flex-direction: column;
         justify-content: center;
 
             .button-holder {
                 position: absolute;
                 top: 0;
                 right: 0;
+            }
+
+            .chart{
+                padding: 40px;
             }
     }
 

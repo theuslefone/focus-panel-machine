@@ -1,18 +1,21 @@
-import { NgForOf, CommonModule  } from '@angular/common';
+import { NgForOf, CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   OnInit,
+  ViewChild,
   ViewEncapsulation
 } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
+// Material
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MachineDataService } from '../../services/machine/machine-data.service';
-import {MatMenuModule} from '@angular/material/menu';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { MatMenuModule } from '@angular/material/menu';
+
+// Gridster +  Charts
 import {
-  CompactType,
   GridsterComponent,
   GridsterConfig,
   GridsterItem,
@@ -21,10 +24,19 @@ import {
   GridType,
   DisplayGrid
 } from 'angular-gridster2';
+import { ChartConfiguration, ChartEvent, ChartType, ChartData } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
+
+
+// Services 
+import { MachineDataService } from '../../services/machine/machine-data.service';
 import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { ErrorService } from '../../services/error/error.service';
 import { LoadingService } from '../../services/loading/loading.service';
 import { RouteParamsService } from '../../services/routesParams/routes-params.service';
+import { parse } from 'path';
+
+
 
 @Component({
   selector: 'app-home-page',
@@ -41,44 +53,132 @@ import { RouteParamsService } from '../../services/routesParams/routes-params.se
     MatMenuModule,
     GridsterComponent,
     GridsterItemComponent,
+    BaseChartDirective,
+
   ]
 })
 
 export class HomePageComponent implements OnInit {
+  idClp!: any;
+  idClient: string = '';
   options!: GridsterConfig;
   dashboard!: GridsterItem[];
   itemToPush!: GridsterItemComponent;
-  unsavedChanges : boolean = false;
-  idClp! : any;
-  idClient : string = ''; 
-  Object: any;
   machineList: any;
   machineDataChart: any;
   chartData: { [key: string]: any } = {};
-  chartLabels: any;
-  chartType: any = 'line';
-  chart: any = [];
 
+  unsavedChanges: boolean = false;
+  isLoadingChart: boolean = false;
+  isFirstLoad: boolean = true; 
+  Object: any;
+  @ViewChild(BaseChartDirective) chart: BaseChartDirective<'bar'> | any;
+
+  public barChartOptions: ChartConfiguration<'bar'>['options'] = {
+    scales: {
+      x: {},
+      y: {
+        min: 10,
+      },
+    },
+    plugins: {
+      legend: {
+        display: true,
+      }
+    },
+  };
+
+  public lineChartOptions: ChartConfiguration<'line'>['options'] = {
+    scales: {
+      x: {
+        type: 'time',
+        time: {
+          unit: 'second',
+        },
+      },
+      y: {
+        min: 0,
+      },
+    },
+    plugins: {
+      legend: {
+        display: true,
+      }
+    },
+  };
+
+  public temperatureChartOptions: ChartConfiguration<'line'>['options'] = {
+    scales: {
+      x: {
+        type: 'time',
+        time: {
+          unit: 'second',
+        },
+      },
+      y: {
+        suggestedMin: 0,
+        suggestedMax: 100,
+      },
+    },
+    plugins: {
+      legend: {
+        display: true,
+      }
+    },
+  };
+
+  public barChartType = 'bar' as const;
+  public lineChartType = 'line' as const;
+  public temperatureChartType = 'line' as const;
+
+  public barChartData_nivel: ChartData<'bar'> = {
+    labels: ['Data'],
+    datasets: [],
+  };
+
+ public lineChartData_pressao: ChartData<'line'>  = {
+    labels: ['Data'],
+    datasets: [],
+ }
+
+  // events
+  public chartClicked({
+    event,
+    active,
+  }: {
+    event?: ChartEvent;
+    active?: object[];
+  }): void {
+  }
+
+  public chartHovered({
+    event,
+    active,
+  }: {
+    event?: ChartEvent;
+    active?: object[];
+  }): void {
+  }
 
   constructor(
     private route: ActivatedRoute,
     private machineDataService: MachineDataService,
     private cdr: ChangeDetectorRef,
-    private dashboardService : DashboardService,
-    private errorService : ErrorService,
+    private dashboardService: DashboardService,
+    private errorService: ErrorService,
     private loadingService: LoadingService,
-    private routeParamsService: RouteParamsService, 
-    ) { 
+    private routeParamsService: RouteParamsService,
+  ) {
 
-      this.route.paramMap.subscribe(params => {
-        this.idClient = params.get('idClient') || ''; 
-        this.idClp = params.get('idClp') || ''; 
-        this.routeParamsService.setIdClient(this.idClient);
-        this.routeParamsService.setIdClp(this.idClp);
-      });
-      
-      this.loadMachineData(this.idClient, this.idClp);
-      this.loadDashboard(this.idClient, this.idClp);
+    this.route.paramMap.subscribe(params => {
+      this.idClient = params.get('idClient') || '';
+      this.idClp = params.get('idClp') || '';
+      this.routeParamsService.setIdClient(this.idClient);
+      this.routeParamsService.setIdClp(this.idClp);
+    });
+
+    this.loadMachineData(this.idClient, this.idClp);
+    this.loadDashboard(this.idClient, this.idClp);
   }
 
   ngOnInit(): void {
@@ -105,18 +205,20 @@ export class HomePageComponent implements OnInit {
       }
     };
     this.route.paramMap.subscribe(params => {
-      this.idClient = params.get('idClient') || ''; 
+      this.idClient = params.get('idClient') || '';
       this.idClp = params.get('idClp') || '';
+      this.loadDashboard(this.idClient, this.idClp);
     });
-  }  
-  
+  }
+
   async loadDashboard(idClient: any, idClp: any): Promise<void> {
+    this.isLoadingChart = true;
     let defaultDashboardLayout = { x: 0, y: 0, key: 'Começe adicionando um gráfico', cols: 3, rows: 2 };
-  
-    try {   
+
+    try {
       let dashboardArray = await this.dashboardService.getDashboard(idClient, idClp);
-      if(await dashboardArray){
-        this.dashboard = JSON.parse(dashboardArray[0].dashboard); 
+      if (await dashboardArray) {
+        this.dashboard = JSON.parse(dashboardArray[0].dashboard);
       } else {
         this.dashboard = [defaultDashboardLayout];
       }
@@ -124,10 +226,12 @@ export class HomePageComponent implements OnInit {
       this.dashboard.forEach((item: any) => {
         this.loadMachineDataRealTime(item.key, this.idClient, this.idClp);
       });
-      
-      this.cdr.detectChanges(); 
+
+      this.cdr.detectChanges();
     } catch (error) {
       console.error('Failed to load dashboard:', error);
+    } finally{
+      this.isLoadingChart = false;
     }
   }
 
@@ -142,40 +246,116 @@ export class HomePageComponent implements OnInit {
       console.error('Erro ao tentar salvar o layout do dashboard:', error);
     }
   }
-  
+
   async loadMachineData(idClient: any, idClp: any): Promise<void> {
     this.loadingService.show();
     try {
       let dataMachine = await this.machineDataService.getDataById(idClient, idClp);
-      let parsedData = JSON.parse(dataMachine[0].data).data;
-      this.machineList = Object.keys(parsedData).map(key => ({ name: key, value: parsedData[key] }));
-      console.log(this.machineList);
-      this.cdr.detectChanges(); 
+      if (dataMachine.length > 0) {
+        let parsedData = JSON.parse(dataMachine[0].data).data;
+        this.machineList = Object.keys(parsedData).map(key => ({ name: key, value: parsedData[key] }));
+      } else {
+        console.error('No data found in dataMachine array');
+      }
+      this.cdr.detectChanges();
     } catch (error) {
       console.error('Failed to load machine data:', error);
     }
     this.loadingService.hide();
   }
 
-  async loadMachineDataRealTime(key:any, idClient: any, idClp: any): Promise<void>{
+  async loadMachineDataRealTime2(key: any, idClient: any, idClp: any): Promise<void> {
     try {
       let dataMachine = await this.machineDataService.getDataById(idClient, idClp);
-      this.machineDataChart = await JSON.parse(dataMachine[0].data).data;
-      
+      let parsedData = JSON.parse(dataMachine[0].data).data;
+
       if (!this.chartData[key]) {
         this.chartData[key] = [];
-      } else if (this.chartData[key].length >= 5) {
-          this.chartData[key].shift();
+      } else if (this.chartData[key].length >= 2) {
+        this.chartData[key].shift();
       }
 
-      this.chartData[key].push([this.machineDataChart[key], dataMachine[0].date_time ]);
+      this.chartData[key].push([parsedData[key], dataMachine[0].date_time]);
+      this.cdr.detectChanges();
 
     } catch (error) {
       console.error('Failed to load machine data:', error);
     }
   }
 
-  async changeMachine(){
+  async loadMachineDataRealTime(key: any, idClient: any, idClp: any): Promise<void> {
+    if(this.isFirstLoad){
+      this.isLoadingChart = true;
+    }
+    try {
+      let dataMachine = await this.machineDataService.getDataById(idClient, idClp);
+      let parsedData = JSON.parse(dataMachine[0].data).data;
+
+      if (!this.chartData[key]) {
+        this.chartData[key] = [];
+      } else if (this.chartData[key].length >= 100) {
+        this.chartData[key].shift();
+      }
+
+      this.chartData[key].push([parsedData[key], new Date(dataMachine[0].date_time).toISOString()]);
+
+      console.log(this.chartData);
+
+      if (this.chartData[key]) {
+        const data: (number | [number, number] | null)[] = [];
+        this.chartData[key].forEach(([value, timestamp]: [number, string]) => {
+          const dateValue = new Date(timestamp).getTime();
+          data.push([dateValue, value]);
+        });
+
+        switch(key){
+          case 'nivel':
+            this.barChartData_nivel.datasets.push({
+              label: this.chartData[key][0][0],
+              data :  this.chartData[key][0][1]
+            });
+    
+            if (this.barChartData_nivel.datasets.length >= 5) {
+              this.barChartData_nivel.datasets.shift();
+            }
+            break;
+          case 'pressao':
+            this.lineChartData_pressao.datasets.push({
+              label: this.chartData[key][0][0],
+              data :  this.chartData[key][0][1]
+            });
+    
+            if (this.lineChartData_pressao.datasets.length >= 5) {
+              this.lineChartData_pressao.datasets.shift();
+            }
+            break;
+          case 'temperatura':
+            this.lineChartData_pressao.datasets.push({
+              label: this.chartData[key][0][0],
+              data :  this.chartData[key][0][1]
+            });
+    
+            if (this.lineChartData_pressao.datasets.length >= 5) {
+              this.lineChartData_pressao.datasets.shift();
+            }
+            break;
+        }
+        
+        this.chart?.update();
+      }
+
+      this.cdr.detectChanges();
+    } catch (error) {
+      console.error('Failed to load machine data:', error);
+    } finally {
+      if(this.isFirstLoad){
+        this.isLoadingChart = false;
+        this.isFirstLoad = false;
+      }    
+    }
+  }
+
+  async changeMachine() {
     this.loadMachineData(this.idClient, this.idClp);
   }
 
@@ -195,20 +375,22 @@ export class HomePageComponent implements OnInit {
     this.dashboard.splice(this.dashboard.indexOf(item), 1);
   }
 
-  addItem(key:any): void {
+  addItem(key: any): void {
     this.loadMachineDataRealTime(key, this.idClient, this.idClp);
 
     setInterval(() => {
       this.loadMachineDataRealTime(key, this.idClient, this.idClp);
     }, 5000);
 
-    this.dashboard.push({ 
+    let uniqueId = this.generateUniqueId(key);
+
+    this.dashboard.push({
       x: 0,
       y: 0,
       cols: 2,
       rows: 2,
-      id: this.generateUniqueId(key),
-      idClp: this.idClp, 
+      id: uniqueId,
+      idClp: this.idClp,
       key: key,
     });
     this.unsaveChanges();
@@ -226,11 +408,11 @@ export class HomePageComponent implements OnInit {
   pushItem(): void {
     alert('Push');
 
-    const push = new GridsterPush(this.itemToPush); 
-    this.itemToPush.$item.rows += 4; 
+    const push = new GridsterPush(this.itemToPush);
+    this.itemToPush.$item.rows += 4;
     if (push.pushItems(push.fromNorth)) {
-      push.checkPushBack(); 
-      push.setPushedItems(); 
+      push.checkPushBack();
+      push.setPushedItems();
       this.itemToPush.setSize();
       this.itemToPush.checkItemChanges(
         this.itemToPush.$item,
@@ -238,9 +420,9 @@ export class HomePageComponent implements OnInit {
       );
     } else {
       this.itemToPush.$item.rows -= 4;
-      push.restoreItems(); 
+      push.restoreItems();
     }
-    push.destroy(); 
+    push.destroy();
     this.unsaveChanges();
   }
 
@@ -248,5 +430,9 @@ export class HomePageComponent implements OnInit {
     alert('getItem')
     if (this.options.api && this.options.api.getItemComponent) {
     }
+  }
+
+  generateChartId(key: string): string {
+    return 'chart_' + key;
   }
 }
