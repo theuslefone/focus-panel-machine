@@ -17,105 +17,144 @@
 // ---------------------------- HOME-HEADER
 
 .home-header {
-    background-color: var(--color_p);
-    color: var(--color_a);
+  background-color: var(--color_p);
+  color: var(--color_a);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 25px;
+  padding: 10px 0px;
+  height: 40px;
+
+  .logo-area {
+    height: 70px;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: 25px;
-    padding: 10px 0px;
-    height: 50px;
-  
-    .logo-area {
-      height: 70px;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      width: 280px;
-      padding-right: 40px;
-      background-color: var(--color_p);
-      border-right: 8px solid var(--color_a);
+    justify-content: flex-end;
+    width: 260px;
+    padding-right: 40px;
+    background-color: var(--color_p);
+    border-right: 8px solid var(--color_a);
+
+    img {
+      height: 50px;
+    }
+  }
+
+  .menu-button {
+    position: fixed;
+    z-index: 1;
+    left: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    height: 70px;
+    width: 60px;
+    padding: 0px;
+    left: 0;
+    background: var(--color_a);
+    color: white;
+  }
+
+  .logo {
+    width: 100px;
+  }
+
+  h1 {
+    font-family: 'Montserrat';
+    color: var(--color_c);
+    display: flex;
+    justify-content: space-between;
+    width: 150px;
+  }
+
+  .user-photo {
+    position: relative;
+    cursor: pointer;
+
+    img {
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
     }
 
-    .menu-button{
-      position: fixed;
-      z-index: 1;
-      left: 10px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      height: 70px;
-      width: 60px;
-      padding: 0px;
-      left: 0;
-      background: var(--color_a);
-      color: white;
+    .user-dropdown {
+      position: absolute;
+      z-index: 2;
+      top: 100%;
+      right: 0;
+      background-color: #fff;
+      width: 160px;
+
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 5px;
+
+      a {
+        padding: 12px 0px;
+      }
+
+      a:hover {
+        background: #fafafa;
+        width: 100%;
+        text-align: center;
+      }
     }
-  
-    .logo {
-      width: 100px; 
+
+    &:hover .user-dropdown {
+      border: 1px solid #ddd;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
+  }
+
+}
+
+.sidenav-container {
+  height: 100vh;
+}
+
+.mat-sidenav {
+  width: 322px;
+  background-color: #ffffff;
+  border-right: 2px solid var(--gray-2);
+}
+
+@media screen and (min-width: 501px) {
+  .home-header {
+    .logo-area {
+      .mobile {
+        display: none;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .home-header {
 
     h1{
-      font-family: 'Montserrat';
-      color: var(--color_c);
-      display: flex;
-      justify-content: space-between;
-      width: 150px;
-    }
-  
-    .user-photo {
-      position: relative;
-      cursor: pointer;
-  
-      img {
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-      }
-  
-      .user-dropdown {
-        position: absolute;
-        z-index: 2;
-        top: 100%;
-        right: 0;
-        background-color: #fff;
-        width: 160px;
-  
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        gap: 5px;
-  
-        a{
-            padding: 12px 0px;
-        }
-  
-        a:hover {
-            background: #fafafa;
-            width: 100%;
-            text-align: center;
+      font-size: 20px;
+      justify-content: flex-start;
+      gap: 15px;
+      width: 25%;
+
+      span{
+        img{
+          width: 15px;
         }
       }
+    }
+
+    .logo-area {
+      width: 125px;
+      padding-right: 10px;
   
-      &:hover .user-dropdown {
-        border: 1px solid #ddd;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      .desktop {
+        display: none;
       }
     }
-  
   }
-    
-  .sidenav-container {
-    height: 100vh;
-  }
-  
-  .mat-sidenav {
-    width: 322px;
-    background-color: #ffffff;
-    border-right: 2px solid var(--gray-2);
-    }
-  
-  
+}

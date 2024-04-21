@@ -21,6 +21,7 @@ interface Machine {
 export class AppComponent implements OnInit {
   title = 'painel-focus';
   logoPath!: string;
+  logoPathMobile!: string;
   statusImg!: string;
   machineList: any;
   gridOptions: any;
@@ -47,6 +48,8 @@ export class AppComponent implements OnInit {
   
   ngOnInit(): void {
     this.logoPath = this.imageService.getImagePath('logo') ?? "";
+    this.logoPathMobile = this.imageService.getImagePath('logoMobile') ?? "";
+    
     this.statusImg = this.imageService.getImagePath('status') ?? "";
   }
   

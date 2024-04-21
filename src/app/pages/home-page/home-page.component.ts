@@ -188,10 +188,6 @@ export class HomePageComponent implements OnInit {
     this.options = {
       gridType: GridType.Fixed,
       displayGrid: DisplayGrid.None,
-      fixedColWidth: 250,
-      fixedRowHeight: 250,
-      keepFixedHeightInMobile: true,
-      keepFixedWidthInMobile: true,
       useBodyForBreakpoint: false,
       mobileBreakpoint: 500,
       pushItems: true,

@@ -12,6 +12,7 @@ export class ImageService {
     status_1: 'assets/images/status_on.png',
     status: 'assets/images/status.png',
     status_0: 'assets/images/status_off.png',
+    logoMobile: 'assets/images/logo_focus.png',
   };
 
   constructor() { }
