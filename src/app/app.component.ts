@@ -56,14 +56,11 @@ export class AppComponent implements OnInit {
   async fetchMachineData() {
     this.routeParamsService.idClient$.subscribe(idClient => {
       this.idClient = idClient;
-      console.log(idClient);
     });
     this.routeParamsService.idClp$.subscribe(idClp => {
       this.idClp = idClp;
-      console.log(idClp);
     });
 
-    
     try {
       this.machineList = await this.machineDataService.getMachine(this.idClient);
       this.machine = this.machineDataService.getMachineById(this.idClient, this.idClp);
