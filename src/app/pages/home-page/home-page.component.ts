@@ -104,6 +104,7 @@ export class HomePageComponent implements OnInit {
   errorGetData: boolean = false;
   showDialog: boolean = true;
   loadChartImage: any;
+  defaultDashboardLayout = { x: 0, y: 0, key: 'Começe adicionando um gráfico', cols: 3, rows: 2 };
 
 
   // events
@@ -191,14 +192,14 @@ export class HomePageComponent implements OnInit {
 
   async loadDashboard(idClient: any, idClp: any): Promise<void> {
     this.isLoadingChart = true;
-    let defaultDashboardLayout = { x: 0, y: 0, key: 'Começe adicionando um gráfico', cols: 3, rows: 2 };
-
     try {
       let dashboardArray = await this.dashboardService.getDashboard(idClient, idClp);
       if (await dashboardArray) {
-        this.dashboard = JSON.parse(dashboardArray[0].dashboard);
+        if(dashboardArray[0],length > 0){
+          this.dashboard = JSON.parse(dashboardArray[0].dashboard);
+        }
       } else {
-        this.dashboard = [defaultDashboardLayout];
+        this.dashboard = [this.defaultDashboardLayout];
       }
 
       this.cdr.detectChanges();
@@ -212,7 +213,7 @@ export class HomePageComponent implements OnInit {
     try {
       this.unsavedChanges = false;
       await this.dashboardService.saveDashboard(this.idClient, this.idClp, this.dashboard);
-      console.log('Layout do dashboard salvo com sucesso.');
+      alert('Layout do dashboard salvo com sucesso.');
     } catch (error) {
       this.unsavedChanges = true;
       alert(this.errorService.getErrorMessage('saveDashboard'));
@@ -274,8 +275,7 @@ export class HomePageComponent implements OnInit {
                   this.lineChartdataArray[item.key]?.datasets[0].data.push(data[item.key]);
                   this.lineChartdataArray[item.key].datasets[0].label = item.key;
                   this.lineChartdataArray[item.key]?.labels?.push(this.timestampMachine);
-                  
-                  // console.log(item.key + ':' + this.lineChartdataArray[item.key]);
+                
                   this.isLoadingChart = false;
                   this.cdr.detectChanges();
                   this.chart.update();
@@ -295,7 +295,6 @@ export class HomePageComponent implements OnInit {
   }
 
   async addTagOnChart(key: any): Promise<any>{
-    console.log(this.lineChartdataArray);
     key = 'SP_VelocVacuum';
 
     const newDataset = {
@@ -305,12 +304,8 @@ export class HomePageComponent implements OnInit {
       backgroundColor: 'rgba(255, 99, 132, 0.5)' 
     };
     this.lineChartdataArray[key].datasets.push(newDataset);  
-    // Adiciona o novo conjunto de dados ao array de datasets
-    console.log(this.lineChartdataArray[key].datasets[0])
-
     this.chart.update();
   }
-
 
   // GRIDSTER
 
@@ -409,7 +404,6 @@ export class HomePageComponent implements OnInit {
   }
 
   addTags(item: any){
-    console.log(item);
     this.addTagOnChart(item);
   }
 
