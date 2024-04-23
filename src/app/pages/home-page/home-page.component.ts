@@ -13,6 +13,9 @@ import { ActivatedRoute } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDialog } from '@angular/material/dialog';
+
 
 // Gridster +  Charts
 import {
@@ -35,6 +38,10 @@ import { ErrorService } from '../../services/error/error.service';
 import { LoadingService } from '../../services/loading/loading.service';
 import { RouteParamsService } from '../../services/routesParams/routes-params.service';
 import { parse } from 'path';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { ImageService } from '../../services/images/images.service';
+
 
 
 
@@ -54,7 +61,9 @@ import { parse } from 'path';
     GridsterComponent,
     GridsterItemComponent,
     BaseChartDirective,
-
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule 
   ]
 })
 
@@ -93,6 +102,8 @@ export class HomePageComponent implements OnInit {
   }
   lineChartdataArray: any[] = [];
   errorGetData: boolean = false;
+  showDialog: boolean = true;
+  loadChartImage: any;
 
 
   // events
@@ -122,6 +133,7 @@ export class HomePageComponent implements OnInit {
     private errorService: ErrorService,
     private loadingService: LoadingService,
     private routeParamsService: RouteParamsService,
+    private imageService: ImageService
   ) {
 
     this.route.paramMap.subscribe(params => {
@@ -137,6 +149,7 @@ export class HomePageComponent implements OnInit {
 
   ngOnInit(): void {
     this.dashboard = [];
+    this.loadChartImage = this.imageService.getImagePath('loadChart') ?? "";
     this.unsavedChanges = false;
     this.options = {
       gridType: GridType.Fixed,
@@ -151,7 +164,7 @@ export class HomePageComponent implements OnInit {
       enableEmptyCellContextMenu: false,
       enableEmptyCellDrop: true,
       enableEmptyCellDrag: true,
-      enableOccupiedCellDrop: false,
+      enableOccupiedCellDrop: true,
       emptyCellClickCallback: this.emptyCellClick.bind(this),
       emptyCellContextMenuCallback: this.emptyCellClick.bind(this),
       emptyCellDropCallback: this.emptyCellClick.bind(this),
@@ -233,19 +246,18 @@ export class HomePageComponent implements OnInit {
   }
 
   async loadMachineDataRealTime(): Promise<void> {
+    this.isLoadingChart = true;
     try {
       setInterval(async () => {
         try {
           let dataMachine = await this.machineDataService.getDataById(this.idClient, this.idClp);
-          
           this.dashboard.forEach(async (item: any) => {
-            console.log(item);
             if (!this.chartData[item.key]) {
               this.chartData[item.key] = [];
             } else if (this.chartData[item.key].length >= 5) {
               this.chartData[item.key].shift();
             }
-
+            
             if (!this.lineChartdataArray[item.key]) {
               this.lineChartdataArray[item.key] = this.lineChartData;
             } else {
@@ -258,19 +270,20 @@ export class HomePageComponent implements OnInit {
                     this.lineChartdataArray[item.key]?.datasets[0].data.shift();
                     this.lineChartdataArray[item.key]?.labels.shift();
                   }
-
+                  
                   this.lineChartdataArray[item.key]?.datasets[0].data.push(data[item.key]);
                   this.lineChartdataArray[item.key].datasets[0].label = item.key;
                   this.lineChartdataArray[item.key]?.labels?.push(this.timestampMachine);
-
+                  
                   // console.log(item.key + ':' + this.lineChartdataArray[item.key]);
+                  this.isLoadingChart = false;
                   this.cdr.detectChanges();
                   this.chart.update();
+           
                 }
               }
             }
           });
-
           this.cdr.detectChanges();
         } catch (error) {
           console.error('Failed to load machine data:', error);
@@ -281,11 +294,27 @@ export class HomePageComponent implements OnInit {
     }
   }
 
+  async addTagOnChart(key: any): Promise<any>{
+    console.log(this.lineChartdataArray);
+    key = 'SP_VelocVacuum';
+
+    const newDataset = {
+      data: [1.2, 0.5, 0.8, 2,4, 2, 1, 3, 4, 8 ,2 ],
+      label: 'Tensão secadora',
+      borderColor: 'rgb(255, 99, 132)',
+      backgroundColor: 'rgba(255, 99, 132, 0.5)' 
+    };
+    this.lineChartdataArray[key].datasets.push(newDataset);  
+    // Adiciona o novo conjunto de dados ao array de datasets
+    console.log(this.lineChartdataArray[key].datasets[0])
+
+    this.chart.update();
+  }
+
 
   // GRIDSTER
 
   emptyCellClick(event: MouseEvent, item: GridsterItem): void {
-    console.info('empty cell click', event, item);
     this.coordChart = [{ x: item.x, y: item.y }];
   }
 
@@ -314,7 +343,7 @@ export class HomePageComponent implements OnInit {
       x: this.coordChart[0].x,
       y: this.coordChart[0].y,
       cols: 2,
-      rows: 3,
+      rows: 1,
       id: uniqueId,
       idClp: this.idClp,
       key: key,
@@ -378,4 +407,10 @@ export class HomePageComponent implements OnInit {
       return this.lineChartdataArray[key];
     }
   }
+
+  addTags(item: any){
+    console.log(item);
+    this.addTagOnChart(item);
+  }
+
 }

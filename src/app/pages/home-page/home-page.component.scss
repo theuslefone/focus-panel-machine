@@ -36,7 +36,7 @@
 
     li {
         padding: 10px 20px;
-        cursor: pointer;
+        cursor: move;
         margin: 10px;
         text-align: center;
         background-color: #f0f0f0;
@@ -73,10 +73,15 @@ gridster {
 
     .content-gridster {
         position: relative;
-        display: flex !important;
+        width: 100%;
+        height: 100%;
+        display: flex;
         align-items: center;
-        flex-direction: column;
         justify-content: center;
+
+        .loading-indicator img{
+            width: 200px;
+        }
 
         .button-holder {
             position: absolute;

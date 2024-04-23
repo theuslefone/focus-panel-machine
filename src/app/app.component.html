@@ -10,8 +10,9 @@
     </a>
   </div>
 
-  <h1><span><img [src]="statusImg" alt="Status"></span> {{ formatMachineName(machineName) }}</h1> <!-- Usando o operador async -->
-  
+  <h1 *ngIf="machineName" ><span><img [src]="statusImg" alt="Status"></span> {{ formatMachineName(machineName) }}</h1> 
+  <h1 *ngIf="!machineName" ><span><img [src]="statusImg" alt="Status"></span> Carregando... </h1>
+    
 </div>
 
 <mat-sidenav-container class="sidenav-container">

@@ -2,6 +2,7 @@
   <button mat-raised-button (click)="saveDashboardLayout()">Salvar alterações</button>
 </div>
 <ul class="options-header">
+  <li *ngIf="machineList" (click)="addTags('tensaoSecadora')" >TensaoSecadora</li>
   <li 
   *ngFor="let machine of machineList" 
   draggable="true"
@@ -30,14 +31,17 @@
             <mat-icon>delete</mat-icon>
             <span>Excluir</span>
           </button>
+          <button mat-menu-item>
+            <mat-icon>add</mat-icon>
+            <span>Adicionar tag</span>
+          </button>
         </mat-menu>
       </div>
       <div *ngIf="isLoadingChart" class="loading-indicator">
-        Carregando...
+        <img [src]="loadChartImage" alt="Carregando...">
       </div>
-      <p>{{ item['key'] }}</p>
-
       <canvas 
+      *ngIf="!isLoadingChart"
       baseChart
       [data]="returnDate(item['key'])"
       [options]="lineChartOptions"
@@ -46,3 +50,4 @@
     </div>
   </gridster-item>
 </gridster>
+
