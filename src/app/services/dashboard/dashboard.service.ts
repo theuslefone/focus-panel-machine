@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class DashboardService {
-  private apiUrl = 'http://webcaseiot.com.br:3000/api/dashboard';
+  private apiUrl = 'https://webcaseiot.com.br:3000/api/dashboard';
 
   constructor() { }
 
