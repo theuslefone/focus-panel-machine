@@ -24,7 +24,7 @@ import {
   GridType,
   DisplayGrid
 } from 'angular-gridster2';
-import { ChartConfiguration, ChartEvent, ChartType, ChartData } from 'chart.js';
+import { ChartConfiguration, ChartEvent, ChartType, ChartData, ChartOptions } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 
 
@@ -67,79 +67,33 @@ export class HomePageComponent implements OnInit {
   machineList: any;
   machineDataChart: any;
   chartData: { [key: string]: any } = {};
-
+  coordChart: any;
+  timestampMachine: any;
   unsavedChanges: boolean = false;
   isLoadingChart: boolean = false;
-  isFirstLoad: boolean = true; 
+  isFirstLoad: boolean = true;
   Object: any;
   @ViewChild(BaseChartDirective) chart: BaseChartDirective<'bar'> | any;
-
-  public barChartOptions: ChartConfiguration<'bar'>['options'] = {
-    scales: {
-      x: {},
-      y: {
-        min: 10,
-      },
-    },
+  lineChartType = 'line' as const;
+  lineChartOptions: ChartOptions<'line'> = {
+    responsive: true,
     plugins: {
       legend: {
-        display: true,
+        position: 'top',
       }
-    },
+    }
   };
+  lineChartData: ChartData<'line'> = {
+    labels: [],
+    datasets: [{
+      data: [],
+      label: ''
+    }
+    ],
+  }
+  lineChartdataArray: any[] = [];
+  errorGetData: boolean = false;
 
-  public lineChartOptions: ChartConfiguration<'line'>['options'] = {
-    scales: {
-      x: {
-        type: 'time',
-        time: {
-          unit: 'second',
-        },
-      },
-      y: {
-        min: 0,
-      },
-    },
-    plugins: {
-      legend: {
-        display: true,
-      }
-    },
-  };
-
-  public temperatureChartOptions: ChartConfiguration<'line'>['options'] = {
-    scales: {
-      x: {
-        type: 'time',
-        time: {
-          unit: 'second',
-        },
-      },
-      y: {
-        suggestedMin: 0,
-        suggestedMax: 100,
-      },
-    },
-    plugins: {
-      legend: {
-        display: true,
-      }
-    },
-  };
-
-  public barChartType = 'bar' as const;
-  public lineChartType = 'line' as const;
-  public temperatureChartType = 'line' as const;
-
-  public barChartData_nivel: ChartData<'bar'> = {
-    labels: ['Data'],
-    datasets: [],
-  };
-
- public lineChartData_pressao: ChartData<'line'>  = {
-    labels: ['Data'],
-    datasets: [],
- }
 
   // events
   public chartClicked({
@@ -177,12 +131,11 @@ export class HomePageComponent implements OnInit {
       this.routeParamsService.setIdClp(this.idClp);
     });
 
-    this.loadMachineData(this.idClient, this.idClp);
     this.loadDashboard(this.idClient, this.idClp);
+    this.loadMachineData(this.idClient, this.idClp, true);
   }
 
   ngOnInit(): void {
-    this.options = {};
     this.dashboard = [];
     this.unsavedChanges = false;
     this.options = {
@@ -192,7 +145,19 @@ export class HomePageComponent implements OnInit {
       mobileBreakpoint: 500,
       pushItems: true,
       rowHeightRatio: 1,
+      rowWidthRatio: 2,
       setGridSize: false,
+      enableEmptyCellClick: false,
+      enableEmptyCellContextMenu: false,
+      enableEmptyCellDrop: true,
+      enableEmptyCellDrag: true,
+      enableOccupiedCellDrop: false,
+      emptyCellClickCallback: this.emptyCellClick.bind(this),
+      emptyCellContextMenuCallback: this.emptyCellClick.bind(this),
+      emptyCellDropCallback: this.emptyCellClick.bind(this),
+      emptyCellDragCallback: this.emptyCellClick.bind(this),
+      emptyCellDragMaxCols: 50,
+      emptyCellDragMaxRows: 50,
       draggable: {
         enabled: true
       },
@@ -200,12 +165,16 @@ export class HomePageComponent implements OnInit {
         enabled: true
       }
     };
+
     this.route.paramMap.subscribe(params => {
       this.idClient = params.get('idClient') || '';
       this.idClp = params.get('idClp') || '';
       this.loadDashboard(this.idClient, this.idClp);
     });
   }
+
+  // SERVICES
+  // - Dashboard
 
   async loadDashboard(idClient: any, idClp: any): Promise<void> {
     this.isLoadingChart = true;
@@ -219,15 +188,10 @@ export class HomePageComponent implements OnInit {
         this.dashboard = [defaultDashboardLayout];
       }
 
-      this.dashboard.forEach((item: any) => {
-        this.loadMachineDataRealTime(item.key, this.idClient, this.idClp);
-      });
-
       this.cdr.detectChanges();
     } catch (error) {
       console.error('Failed to load dashboard:', error);
-    } finally{
-      this.isLoadingChart = false;
+    } finally {
     }
   }
 
@@ -243,120 +207,93 @@ export class HomePageComponent implements OnInit {
     }
   }
 
-  async loadMachineData(idClient: any, idClp: any): Promise<void> {
+  // - Machines
+
+  async loadMachineData(idClient: any, idClp: any, realTime: boolean): Promise<void> {
     this.loadingService.show();
     try {
       let dataMachine = await this.machineDataService.getDataById(idClient, idClp);
       if (dataMachine.length > 0) {
-        let parsedData = JSON.parse(dataMachine[0].data).data;
+        let parsedData = JSON.parse(dataMachine[0].data);
         this.machineList = Object.keys(parsedData).map(key => ({ name: key, value: parsedData[key] }));
+        if (realTime) {
+          this.isLoadingChart = false;
+          this.loadMachineDataRealTime();
+        }
       } else {
         console.error('No data found in dataMachine array');
       }
       this.cdr.detectChanges();
     } catch (error) {
       console.error('Failed to load machine data:', error);
-    }
-    this.loadingService.hide();
-  }
-
-  async loadMachineDataRealTime2(key: any, idClient: any, idClp: any): Promise<void> {
-    try {
-      let dataMachine = await this.machineDataService.getDataById(idClient, idClp);
-      let parsedData = JSON.parse(dataMachine[0].data).data;
-
-      if (!this.chartData[key]) {
-        this.chartData[key] = [];
-      } else if (this.chartData[key].length >= 2) {
-        this.chartData[key].shift();
-      }
-
-      this.chartData[key].push([parsedData[key], dataMachine[0].date_time]);
-      this.cdr.detectChanges();
-
-    } catch (error) {
-      console.error('Failed to load machine data:', error);
-    }
-  }
-
-  async loadMachineDataRealTime(key: any, idClient: any, idClp: any): Promise<void> {
-    if(this.isFirstLoad){
-      this.isLoadingChart = true;
-    }
-    try {
-      let dataMachine = await this.machineDataService.getDataById(idClient, idClp);
-      let parsedData = JSON.parse(dataMachine[0].data).data;
-
-      if (!this.chartData[key]) {
-        this.chartData[key] = [];
-      } else if (this.chartData[key].length >= 100) {
-        this.chartData[key].shift();
-      }
-
-      this.chartData[key].push([parsedData[key], new Date(dataMachine[0].date_time).toISOString()]);
-
-      console.log(this.chartData);
-
-      if (this.chartData[key]) {
-        const data: (number | [number, number] | null)[] = [];
-        this.chartData[key].forEach(([value, timestamp]: [number, string]) => {
-          const dateValue = new Date(timestamp).getTime();
-          data.push([dateValue, value]);
-        });
-
-        switch(key){
-          case 'nivel':
-            this.barChartData_nivel.datasets.push({
-              label: this.chartData[key][0][0],
-              data :  this.chartData[key][0][1]
-            });
-    
-            if (this.barChartData_nivel.datasets.length >= 5) {
-              this.barChartData_nivel.datasets.shift();
-            }
-            break;
-          case 'pressao':
-            this.lineChartData_pressao.datasets.push({
-              label: this.chartData[key][0][0],
-              data :  this.chartData[key][0][1]
-            });
-    
-            if (this.lineChartData_pressao.datasets.length >= 5) {
-              this.lineChartData_pressao.datasets.shift();
-            }
-            break;
-          case 'temperatura':
-            this.lineChartData_pressao.datasets.push({
-              label: this.chartData[key][0][0],
-              data :  this.chartData[key][0][1]
-            });
-    
-            if (this.lineChartData_pressao.datasets.length >= 5) {
-              this.lineChartData_pressao.datasets.shift();
-            }
-            break;
-        }
-        
-        this.chart?.update();
-      }
-
-      this.cdr.detectChanges();
-    } catch (error) {
-      console.error('Failed to load machine data:', error);
+      this.errorGetData = true;
     } finally {
-      if(this.isFirstLoad){
-        this.isLoadingChart = false;
-        this.isFirstLoad = false;
-      }    
+      this.loadingService.hide();
     }
   }
 
-  async changeMachine() {
-    this.loadMachineData(this.idClient, this.idClp);
+  async loadMachineDataRealTime(): Promise<void> {
+    try {
+      setInterval(async () => {
+        try {
+          let dataMachine = await this.machineDataService.getDataById(this.idClient, this.idClp);
+          
+          this.dashboard.forEach(async (item: any) => {
+            console.log(item);
+            if (!this.chartData[item.key]) {
+              this.chartData[item.key] = [];
+            } else if (this.chartData[item.key].length >= 5) {
+              this.chartData[item.key].shift();
+            }
+
+            if (!this.lineChartdataArray[item.key]) {
+              this.lineChartdataArray[item.key] = this.lineChartData;
+            } else {
+              if (await dataMachine) {
+                let data = JSON.parse(await dataMachine[0]?.data);
+                this.timestampMachine = new Date(await dataMachine[0]?.date_time).toLocaleTimeString("pt-BR", { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                
+                if (data) {
+                  if (this.lineChartdataArray[item.key]?.datasets[0].data.length >= 10) {
+                    this.lineChartdataArray[item.key]?.datasets[0].data.shift();
+                    this.lineChartdataArray[item.key]?.labels.shift();
+                  }
+
+                  this.lineChartdataArray[item.key]?.datasets[0].data.push(data[item.key]);
+                  this.lineChartdataArray[item.key].datasets[0].label = item.key;
+                  this.lineChartdataArray[item.key]?.labels?.push(this.timestampMachine);
+
+                  // console.log(item.key + ':' + this.lineChartdataArray[item.key]);
+                  this.cdr.detectChanges();
+                  this.chart.update();
+                }
+              }
+            }
+          });
+
+          this.cdr.detectChanges();
+        } catch (error) {
+          console.error('Failed to load machine data:', error);
+        }
+      }, 5000);
+    } catch (error) {
+      console.error('Failed to start real-time data fetching:', error);
+    }
   }
 
-  unsaveChanges(): void {
-    this.unsavedChanges = true;
+
+  // GRIDSTER
+
+  emptyCellClick(event: MouseEvent, item: GridsterItem): void {
+    console.info('empty cell click', event, item);
+    this.coordChart = [{ x: item.x, y: item.y }];
+  }
+
+  dragStartHandler(ev: DragEvent): void {
+    if (ev.dataTransfer) {
+      ev.dataTransfer.setData('text/plain', 'Drag Me Button');
+      ev.dataTransfer.dropEffect = 'copy';
+    }
   }
 
   changedOptions(): void {
@@ -372,19 +309,12 @@ export class HomePageComponent implements OnInit {
   }
 
   addItem(key: any): void {
-    this.loadMachineDataRealTime(key, this.idClient, this.idClp);
-
-    setInterval(() => {
-      this.loadMachineDataRealTime(key, this.idClient, this.idClp);
-    }, 5000);
-
     let uniqueId = this.generateUniqueId(key);
-
     this.dashboard.push({
-      x: 0,
-      y: 0,
+      x: this.coordChart[0].x,
+      y: this.coordChart[0].y,
       cols: 2,
-      rows: 2,
+      rows: 3,
       id: uniqueId,
       idClp: this.idClp,
       key: key,
@@ -392,9 +322,6 @@ export class HomePageComponent implements OnInit {
     this.unsaveChanges();
   }
 
-  generateUniqueId(key: any): string {
-    return key + '_' + Math.random().toString(36).substr(2, 9);
-  }
 
   initItem(item: GridsterItem, itemComponent: GridsterItemComponent): void {
     alert('initItem');
@@ -402,8 +329,6 @@ export class HomePageComponent implements OnInit {
   }
 
   pushItem(): void {
-    alert('Push');
-
     const push = new GridsterPush(this.itemToPush);
     this.itemToPush.$item.rows += 4;
     if (push.pushItems(push.fromNorth)) {
@@ -428,7 +353,29 @@ export class HomePageComponent implements OnInit {
     }
   }
 
+  // DASHBOARD
+
+  unsaveChanges(): void {
+    this.unsavedChanges = true;
+  }
+
+  // UTILS
+
+  generateUniqueId(key: any): string {
+    return key + '_' + Math.random().toString(36).substr(2, 9);
+  }
+
   generateChartId(key: string): string {
     return 'chart_' + key;
+  }
+
+  returnDate(key: any) {
+    if (this.lineChartdataArray[key]) {
+      return this.lineChartdataArray[key];
+    } else {
+      this.lineChartdataArray[key] = this.lineChartData;
+      // console.log(this.lineChartdataArray[key]);
+      return this.lineChartdataArray[key];
+    }
   }
 }

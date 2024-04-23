@@ -2,20 +2,15 @@
   <button mat-raised-button (click)="saveDashboardLayout()">Salvar alterações</button>
 </div>
 <ul class="options-header">
-  <li *ngFor="let machine of machineList" (click)="addItem(machine.name)" class="add-button cols-2">
+  <li 
+  *ngFor="let machine of machineList" 
+  draggable="true"
+  (dragstart)="dragStartHandler($event)"
+  (dragend)="addItem(machine.name)"
+  class="add-button cols-2">
     {{ machine.name }}
   </li>
 </ul>
-
-<!-- <canvas
-baseChart
-[data]="barChartData"
-[options]="barChartOptions"
-[type]="barChartType"
-(chartHover)="chartHovered($event)"
-(chartClick)="chartClicked($event)"
->
-</canvas> -->
 
 <gridster [options]="options">
   <gridster-item 
@@ -37,51 +32,17 @@ baseChart
           </button>
         </mat-menu>
       </div>
-      <p>{{ item['key'] }}</p>
-
       <div *ngIf="isLoadingChart" class="loading-indicator">
-        <!-- Aqui você pode adicionar o seu indicador de carregamento -->
         Carregando...
       </div>
+      <p>{{ item['key'] }}</p>
 
-      @switch(item['key']){
-        @case('nivel'){
-          <canvas 
-          *ngIf="!isLoadingChart"
-          baseChart
-          [data]="barChartData_nivel"
-          [type]="barChartType"
-          (chartHover)="chartHovered($event)"
-          (chartClick)="chartClicked($event)"
-          [attr.id]="generateUniqueId(item['key'])"
-          style="height: 400px; width: 100%;">
-          </canvas>
-        }
-        @case('pressao'){
-          <canvas 
-          *ngIf="!isLoadingChart"
-          baseChart
-          [data]="lineChartData_pressao"
-          [type]="barChartType"
-          (chartHover)="chartHovered($event)"
-          (chartClick)="chartClicked($event)"
-          [attr.id]="generateUniqueId(item['key'])"
-          style="height: 400px; width: 100%;">
-          </canvas>
-        }
-        @case('temperatura'){
-          <p>Temperatura</p>
-        }
-        @case('peso'){
-          <p>peso</p>
-        }
-        @default{
-          <p>Default</p>
-        }
-      }
-
-  
-  
+      <canvas 
+      baseChart
+      [data]="returnDate(item['key'])"
+      [options]="lineChartOptions"
+      [type]="'line'">
+    </canvas>
     </div>
   </gridster-item>
 </gridster>
