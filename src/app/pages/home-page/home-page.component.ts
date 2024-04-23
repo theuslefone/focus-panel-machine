@@ -195,7 +195,7 @@ export class HomePageComponent implements OnInit {
     try {
       let dashboardArray = await this.dashboardService.getDashboard(idClient, idClp);
       if (await dashboardArray) {
-        if(dashboardArray[0],length > 0){
+        if(dashboardArray[0].length > 0){
           this.dashboard = JSON.parse(dashboardArray[0].dashboard);
         }
       } else {
