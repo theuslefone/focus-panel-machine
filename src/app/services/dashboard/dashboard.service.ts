@@ -7,7 +7,9 @@ import { Observable } from 'rxjs';
 })
 export class DashboardService {
 
-  private apiUrl = 'http://webcaseiot.com.br:3000/api';
+ 
+  private apiUrlProd = 'http://webcaseiot.com.br:3000/api';
+  private apiUrl = 'http://localhost:3000/api';
 
   constructor() { }
 

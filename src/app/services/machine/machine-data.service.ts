@@ -5,7 +5,8 @@ import { Injectable } from '@angular/core';
 })
 export class MachineDataService {
 
-  private apiUrl = 'http://webcaseiot.com.br:3000/api';
+  private apiUrlProd = 'http://webcaseiot.com.br:3000/api';
+  private apiUrl = 'http://localhost:3000/api';
 
   constructor() { }
 
