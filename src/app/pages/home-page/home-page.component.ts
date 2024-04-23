@@ -90,7 +90,14 @@ export class HomePageComponent implements OnInit {
       legend: {
         position: 'top',
       }
+    },
+   scales: {
+    y: {
+      display: true,
+      suggestedMin: 0,
+      suggestedMax: 300
     }
+   }
   };
   lineChartData: ChartData<'line'> = {
     labels: [],
@@ -264,7 +271,7 @@ export class HomePageComponent implements OnInit {
                 this.timestampMachine = new Date(await dataMachine[0]?.date_time).toLocaleTimeString("pt-BR", { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                 
                 if (data) {
-                  if (this.lineChartdataArray[item.key]?.datasets[0].data.length >= 10) {
+                  if (this.lineChartdataArray[item.key]?.datasets[0].data.length >= 25) {
                     this.lineChartdataArray[item.key]?.datasets[0].data.shift();
                     this.lineChartdataArray[item.key]?.labels.shift();
                   }
