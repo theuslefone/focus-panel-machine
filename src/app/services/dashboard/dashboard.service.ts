@@ -13,7 +13,6 @@ export class DashboardService {
 
   private async request(method: string, url: string, data?: any): Promise<any> {
     try {
-      console.log()
       const response: AxiosResponse = await axios({ method, url, data });
       return response.data;
     } catch (error) {
