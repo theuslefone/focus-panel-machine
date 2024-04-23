@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { provideHttpClient, withFetch } from '@angular/common/http';
+import { MatNativeDateModule } from '@angular/material/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
@@ -36,6 +37,7 @@ import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
     BrowserAnimationsModule,
     MatToolbarModule,
     GridsterModule,
+    MatNativeDateModule
   ],
   providers : [provideHttpClient(withFetch()), provideCharts(withDefaultRegisterables())],
   bootstrap: [AppComponent]
