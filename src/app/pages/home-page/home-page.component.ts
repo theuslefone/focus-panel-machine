@@ -104,7 +104,7 @@ export class HomePageComponent implements OnInit {
   errorGetData: boolean = false;
   showDialog: boolean = true;
   loadChartImage: any;
-  defaultDashboardLayout = { x: 0, y: 0, key: 'Começe adicionando um gráfico', cols: 3, rows: 2 };
+  defaultDashboardLayout = [{ x: 0, y: 0, key: 'Começe adicionando um gráfico', cols: 3, rows: 2 }];
 
 
   // events
@@ -194,14 +194,11 @@ export class HomePageComponent implements OnInit {
     this.isLoadingChart = true;
     try {
       let dashboardArray = await this.dashboardService.getDashboard(idClient, idClp);
-      if (await dashboardArray) {
-        if(dashboardArray[0].length > 0){
-          this.dashboard = JSON.parse(dashboardArray[0].dashboard);
-        }
-      } else {
-        this.dashboard = [this.defaultDashboardLayout];
+      if(JSON.parse(dashboardArray[0].dashboard) != 'null' && JSON.parse(dashboardArray[0].dashboard) != null &&  JSON.parse(dashboardArray[0].dashboard).length > 0){
+        this.dashboard = JSON.parse(dashboardArray[0].dashboard);
+      }else{
+        this.dashboard = this.defaultDashboardLayout;
       }
-
       this.cdr.detectChanges();
     } catch (error) {
       console.error('Failed to load dashboard:', error);
