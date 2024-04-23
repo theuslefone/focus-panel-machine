@@ -31,7 +31,7 @@
             <mat-icon>delete</mat-icon>
             <span>Excluir</span>
           </button>
-          <button mat-menu-item>
+          <button *ngIf="item['key'] == 'SP_VelocVacuum'" (click)="addItem(item['key'])"  mat-menu-item>
             <mat-icon>add</mat-icon>
             <span>Adicionar tag</span>
           </button>
