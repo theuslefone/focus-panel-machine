@@ -65,7 +65,9 @@
     color: var(--color_c);
     display: flex;
     justify-content: space-between;
-    width: 150px;
+    width: 100%;
+    max-width: fit-content;
+    gap: 18px;
   }
 
   .user-photo {
